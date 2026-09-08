@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fairweather — is this a good window to be walking?</title>
+<meta name="description" content="Enter a city and your dates. Fairweather reads the forecast the way a day hiker would and tells you which days are worth being out, and what to pack.">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>⛰</text></svg>">
+</head>
+<body>
+
+<a class="skip" href="#results">Skip to results</a>
+
+<div class="page">
+
+  <header class="masthead">
+    <h1>Fairweather</h1>
+    <p class="standfirst">
+      A forecast reader for one specific person: someone on foot, outdoors most of
+      the daylight hours, with nowhere convenient to duck inside. Tell it where and
+      when, and it will tell you which days are worth it.
+    </p>
+  </header>
+
+  <form id="search" class="search" novalidate>
+    <div class="field field--city">
+      <label for="city">City</label>
+      <input id="city" name="city" type="text" autocomplete="off" spellcheck="false"
+             placeholder="New Delhi" required>
+    </div>
+    <div class="field">
+      <label for="start">From</label>
+      <input id="start" name="start" type="date" required>
+    </div>
+    <div class="field">
+      <label for="end">To</label>
+      <input id="end" name="end" type="date" required>
+    </div>
+    <div class="field field--action">
+      <button type="submit">Read the forecast</button>
+    </div>
+    <p class="field-note" id="range-note"></p>
+  </form>
+
+  <main id="results" class="results" aria-live="polite" aria-busy="false"></main>
+
+  <footer class="colophon">
+    <p>
+      Forecast and geocoding from <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a>,
+      fetched live in your browser each time you search. Nothing is stored.
+    </p>
+    <p>
+      <a href="note.html">How the verdicts are decided &rarr;</a>
+    </p>
+  </footer>
+
+</div>
+
+<!-- Templates -------------------------------------------------------------- -->
+
+<template id="t-empty">
+  <section class="state state--empty">
+    <p class="state-lead">Nothing searched yet.</p>
+    <p class="state-body">
+      Pick a city and a stretch of up to fourteen days. You will get a one-line read
+      on the trip, a verdict for each individual day, and a single packing list for
+      the whole thing.
+    </p>
+    <p class="state-body state-body--quiet">
+      Verdicts are written for a day hiker. If you are going to a wedding, ignore
+      this tool.
+    </p>
+  </section>
+</template>
+
+<template id="t-loading">
+  <section class="state state--loading">
+    <p class="state-lead" id="loading-line">Reading the forecast&hellip;</p>
+    <div class="skeleton"><span></span><span></span><span></span></div>
+  </section>
+</template>
+
+<template id="t-error">
+  <section class="state state--error" role="alert">
+    <p class="state-lead" data-slot="title"></p>
+    <p class="state-body" data-slot="detail"></p>
+    <p class="state-actions"><button type="button" data-action="retry">Try again</button></p>
+  </section>
+</template>
+
+<template id="t-choose">
+  <section class="state state--choose">
+    <p class="state-lead" data-slot="title"></p>
+    <p class="state-body">
+      More than one place goes by that name. We are not going to guess which one you
+      meant.
+    </p>
+    <ul class="choices" data-slot="list"></ul>
+  </section>
+</template>
+
+<template id="t-results">
+  <section class="report">
+
+    <div class="place">
+      <p class="place-name" data-slot="place"></p>
+      <button type="button" class="linky" data-action="rechoose" hidden>Not this one?</button>
+    </div>
+
+    <p class="summary" data-slot="summary"></p>
+    <p class="summary-sub" data-slot="summary-sub"></p>
+
+    <h2 class="section-head">Day by day</h2>
+    <ol class="days" data-slot="days"></ol>
+
+    <h2 class="section-head">Pack for the whole trip</h2>
+    <ul class="packing" data-slot="packing"></ul>
+    <p class="packing-note">
+      Weather-driven only. Your ordinary kit &mdash; boots, map, food, first aid &mdash;
+      is assumed and deliberately not listed.
+    </p>
+
+  </section>
+</template>
+
+<template id="t-day">
+  <li class="day">
+    <p class="day-date"><span data-slot="weekday"></span> <span class="day-date-num" data-slot="date"></span></p>
+    <p class="day-band" data-slot="band"></p>
+    <p class="day-verdict" data-slot="verdict"></p>
+    <p class="day-window" data-slot="window"></p>
+    <dl class="day-figures" data-slot="figures"></dl>
+  </li>
+</template>
+
+<script type="module" src="js/main.js"></script>
+
+</body>
+</html>

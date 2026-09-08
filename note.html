@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Fairweather decides — the note</title>
+<meta name="description" content="The thresholds behind Fairweather, why they are set where they are, what was deliberately left out, and what would come next.">
+<meta name="color-scheme" content="light dark">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>⛰</text></svg>">
+</head>
+<body>
+<div class="page">
+
+<a class="backlink" href="./">&larr; Back to Fairweather</a>
+
+<header class="masthead">
+  <h1>The note</h1>
+  <p class="standfirst">
+    What Fairweather decides, where the numbers come from, and the three or four
+    places where I chose one thing over another.
+  </p>
+</header>
+
+<div class="prose">
+
+<h2>Who this is for</h2>
+
+<p>
+  A day hiker. One person, on foot, outdoors for most of the daylight hours,
+  some distance from shelter.
+</p>
+
+<p>
+  That is the only decision in this project that mattered, because every number
+  below follows from it. A hiker cannot step into a café when the sun turns,
+  cannot get off a ridge quickly, and is working hard the whole time. Thirty-two
+  degrees is a pleasant afternoon if you are wandering between air-conditioned
+  shops and a genuine problem if you are four hours into a walk. Advice that
+  tries to serve both ends up serving neither, so the app says on its own front
+  page that if you are going to a wedding, you should ignore it.
+</p>
+
+<h2>The workflow, end to end</h2>
+
+<p>
+  Everything below happens in the browser on each search. There is no server,
+  no database and no cache, so a stale response is not a failure mode this
+  product has.
+</p>
+
+<h3>1. The city becomes a question, not an answer</h3>
+
+<p>
+  The typed name goes to Open-Meteo's geocoding endpoint asking for up to five
+  matches. What comes back is a list, and the app treats it as a list.
+</p>
+
+<ul>
+  <li><b>No matches</b> — an error state that suggests adding a country, because that is what actually fixes it.</li>
+  <li><b>One match</b> — used, but the resolved place is printed above the results. You always know which town you are reading about.</li>
+  <li><b>Two or more</b> — a screen of its own. Each option shows its region, country, population and coordinates, because "Springfield, Illinois, population 114,394" is enough to choose and "Springfield" is not.</li>
+</ul>
+
+<p>
+  Population is shown for one reason: it is the fastest way for a person to
+  recognise the place they meant. It is not used to rank or auto-select.
+  Silently taking the first result would have been three fewer lines of code
+  and a worse product.
+</p>
+
+<h3>2. The forecast is fetched for exactly the dates asked for</h3>
+
+<p>
+  The chosen coordinates and the two dates go to the forecast endpoint with
+  <code>timezone=auto</code>, so days break at local midnight rather than
+  wherever the reader happens to be. Eleven daily fields come back, plus two
+  hourly series.
+</p>
+
+<p>
+  The date inputs are bounded at both ends: no earlier than today, no later
+  than fourteen days out. Anything the browser lets through anyway is caught
+  again in JavaScript before a request is made, because a native date picker is
+  a suggestion, not a guarantee. Past dates are refused rather than silently
+  redirected to the archive API, since a forecast and a historical record are
+  different products and pretending otherwise would be dishonest.
+</p>
+
+<h3>3. Six concerns are scored independently</h3>
+
+<p>
+  Each concern reads the fields it needs and returns a level: 0 not worth
+  mentioning, 1 worth knowing, 2 changes the plan, 3 do not go. The day takes
+  the highest level any concern reached.
+</p>
+
+<h3>4. One concern writes the sentence</h3>
+
+<p>
+  Whichever concern scored highest writes the verdict. Ties break on a fixed
+  order — heat, wind, cold, rain, UV, daylight — ranked by what actually injures
+  someone on foot rather than by what feels dramatic.
+</p>
+
+<h3>5. The rest go in the packing list</h3>
+
+<p>
+  Concerns that did not write the sentence are not discarded. Every triggered
+  concern contributes items to one trip-wide list, so a day whose verdict is
+  about heat still puts a shell in your bag if there was rain in it.
+</p>
+
+<h2>The thresholds</h2>
+
+<div class="scroller">
+<table>
+  <thead>
+    <tr><th>Signal</th><th>Level 1</th><th>Level 2</th><th>Level 3</th><th>Why here</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Rain</td>
+      <td>≥35% or ≥1mm</td>
+      <td>≥60% <em>and</em> ≥2mm, or ≥5mm</td>
+      <td>≥70% <em>and</em> ≥10mm</td>
+      <td>Probability alone lies. A 70% chance of half a millimetre is a non-event; 12mm at 55% soaks through anything that is not a proper shell. Both signals or neither.</td>
+    </tr>
+    <tr>
+      <td>Heat</td>
+      <td>28°</td>
+      <td>32°</td>
+      <td>38°</td>
+      <td>Read off apparent temperature, not the thermometer, because what matters is the load on someone already working. 32° is where a full day of exertion starts costing you. 38° is not a judgement call.</td>
+    </tr>
+    <tr>
+      <td>Cold</td>
+      <td>7°</td>
+      <td>2°</td>
+      <td>−5°</td>
+      <td>Read off the apparent minimum, because a hiker meets the minimum at dawn and at every stop, not while moving. 2° means ice underfoot and hands that stop working.</td>
+    </tr>
+    <tr>
+      <td>Wind</td>
+      <td>25 km/h</td>
+      <td>40 km/h</td>
+      <td>60 km/h</td>
+      <td>Gusts, not the sustained average. The average tells you how tiring the day is; the gust decides whether you stay upright on exposed ground, and that is what changes the route.</td>
+    </tr>
+    <tr>
+      <td>UV</td>
+      <td>6</td>
+      <td>8</td>
+      <td>11</td>
+      <td>A hiker is exactly who this index was written for: exposed, all day. At 8, sunscreen alone does not survive eight hours of sweat, so the advice becomes cover rather than cream.</td>
+    </tr>
+    <tr>
+      <td>Daylight</td>
+      <td>&lt;9.5 h</td>
+      <td>—</td>
+      <td>—</td>
+      <td>Capped at level 1 on purpose. Short days never make weather bad, but they quietly decide how long a route can be, and no forecast app tells you in a usable form.</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<h2>When several things go wrong at once</h2>
+
+<p>
+  The verdict still has to be one sentence, so the rule is deliberately strict.
+  The dominant concern writes it. Exactly one other concern may add a trailing
+  clause, and only if it is serious enough to change what you do — or if the
+  day is mild enough that two small notes fit comfortably. A serious sentence
+  is never given company:
+</p>
+
+<p class="aside">
+  "Start at first light and be finished by midday — it reaches 36° with no
+  shade to hide in, and the wind will fight you."
+</p>
+
+<p>
+  Three concerns are never listed. At that point the sentence stops being a
+  verdict and becomes a weather report, which is the thing this product exists
+  to avoid.
+</p>
+
+<h2>What an unremarkable day says</h2>
+
+<p>
+  Most days are unremarkable, and most tools handle them either by saying
+  nothing or by inventing drama. Here an unremarkable day gets the shortest
+  card on the page, no colour, no marker, and one confident sentence that uses
+  the real numbers as reassurance:
+</p>
+
+<p class="aside">
+  "About as good as walking weather gets — 10° to 18°, dry, and no wind worth
+  the name."
+</p>
+
+<p>
+  The absence of a warning is the product. That is also why colour appears only
+  on days scoring 2 or 3: if everything is marked, nothing is.
+</p>
+
+<h2>What I left out on purpose</h2>
+
+<p>
+  <b>Cloud cover.</b> It is the field almost every weather app leads with, and
+  it is close to irrelevant to whether a day on foot is good. An overcast 19°
+  day is excellent walking. Sunshine hours would have made the interface look
+  richer and the advice worse, so the app never fetches the field.
+</p>
+
+<p>
+  Two smaller omissions follow the same reasoning. Humidity is not shown as its
+  own number, because apparent temperature already contains it and shows it in
+  the only form that matters — how hard the day will feel. And the packing list
+  is weather-driven only: no boots, no map, no first aid. Padding it with things
+  you would take anyway would make it longer and less trustworthy.
+</p>
+
+<h2>What I would build next</h2>
+
+<ol>
+  <li>
+    <b>Confidence, not just values.</b> A ten-day-out forecast is treated
+    exactly like a two-day-out one, which is wrong. The next version would
+    compare model runs and soften the language as the horizon extends —
+    "probably" is a real piece of information and the app currently withholds it.
+  </li>
+  <li>
+    <b>Terrain.</b> Coordinates carry an elevation the app already receives and
+    ignores. A 25 km/h wind at 2,400 m is a different day from the same wind at
+    sea level, and altitude would let the thresholds move rather than staying
+    fixed.
+  </li>
+  <li>
+    <b>A second audience, properly.</b> Not a toggle bolted onto these numbers,
+    but a separate set of thresholds and a separate voice. The moment this app
+    tries to advise the hiker and the wedding guest from one table, both get
+    worse advice.
+  </li>
+</ol>
+
+<h2>What it is built with</h2>
+
+<p>
+  Plain HTML, CSS and JavaScript. Four small ES modules, no framework, no build
+  step, no dependencies, nothing to install. Two typefaces that ship with the
+  operating system — Garamond for anything that is a judgement, Trebuchet MS for
+  anything that is a number — and five colours, one of which has a job.
+  Deployed as static files on Vercel.
+</p>
+
+<p>
+  Data is Open-Meteo's free geocoding and forecast endpoints, called live from
+  the browser on every search. No key, no proxy, nothing stored, nothing cached.
+</p>
+
+<p>
+  I used Claude Code as a pair while building it. The product decisions — the
+  audience, the six concerns, where each threshold sits, what to leave out —
+  are mine, and every threshold in the app is in one file so they can be
+  argued with.
+</p>
+
+</div>
+
+<footer class="colophon">
+  <p><a href="./">&larr; Back to Fairweather</a></p>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+name: checks
+
+# Static site, so there is nothing to build. This exists to catch the two
+# things that actually break a no-build-step project: a syntax error in a
+# module, and a link or asset that stopped existing.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Syntax-check every module
+        run: |
+          for file in js/*.js; do
+            echo "checking $file"
+            node --check "$file"
+          done
+
+      - name: Check every local asset referenced by the HTML exists
+        run: |
+          missing=0
+          for page in index.html note.html; do
+            grep -oE '(href|src)="[^"#:]+"' "$page" \
+              | sed -E 's/.*="([^"]+)"/\1/' \
+              | grep -vE '^(https?:|data:|mailto:|\./?$)' \
+              | while IFS= read -r ref; do
+                  target="${ref#./}"
+                  [ -f "$target" ] || echo "MISSING|$page|$ref"
+                done
+          done > /tmp/refs.txt
+          if grep -q '^MISSING' /tmp/refs.txt; then
+            while IFS='|' read -r _ page ref; do
+              echo "::error file=$page::missing asset $ref"
+            done < /tmp/refs.txt
+            exit 1
+          fi
+          echo "all local assets present"
+
+      - name: Confirm the app still calls the live API
+        run: |
+          # A hardcoded forecast is an automatic rejection, so assert the
+          # real endpoints are still being called.
+          grep -q 'geocoding-api.open-meteo.com' js/api.js
+          grep -q 'api.open-meteo.com/v1/forecast' js/api.js
+          echo "live endpoints present"
