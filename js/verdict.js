@@ -324,13 +324,13 @@ export function summariseTrip(verdicts) {
     line = `Nothing here is straightforward — all ${n} days need planning around.`;
 
   } else if (bad.length === 0 && clear.length >= tricky.length) {
-    line = `Mostly good — ${phrase(tricky, n)} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest ${verb(clear.length, 'is', 'are')} straightforward walking.`;
+    line = `Mostly good — ${phrase(tricky, n, 'lead')} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest ${verb(clear.length, 'is', 'are')} straightforward walking.`;
 
   } else if (bad.length === 0) {
-    line = `A demanding window — only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward, and ${phrase(tricky, n)} ${verb(tricky.length, 'needs', 'need')} real planning.`;
+    line = `A demanding window — only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward, and ${phrase(tricky, n, 'rest')} ${verb(tricky.length, 'needs', 'need')} real planning.`;
 
   } else {
-    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} usable — ${phrase(bad, n)} ${verb(bad.length, 'is', 'are')} a write-off.`;
+    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} usable — ${phrase(bad, n, 'rest')} ${verb(bad.length, 'is', 'are')} a write-off.`;
   }
 
   return { line, sub: spine(verdicts) };
@@ -338,23 +338,20 @@ export function summariseTrip(verdicts) {
 
 /*
   Naming days only helps up to about three. Past that a reader stops parsing
-  the list and starts counting it, so we count for them.
+  the list and starts counting it, so we count for them — as "the other four"
+  when the sentence has already named a total to subtract from, and as a plain
+  count when it has not.
 */
-function phrase(subset, tripLength) {
+function phrase(subset, tripLength, position) {
   if (subset.length === 0) return 'none of them';
   if (subset.length <= 3) return joinWords(subset.map(v => dayName(v.date, tripLength)));
-  return `${spellNumber(subset.length)} of the days`;
+  return position === 'rest'
+    ? `the other ${subset.length}`
+    : `${subset.length} of the ${tripLength} days`;
 }
 
 function verb(count, singular, plural) {
   return count === 1 ? singular : plural;
-}
-
-const NUMBERS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
-                 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen'];
-
-function spellNumber(n) {
-  return NUMBERS[n] || String(n);
 }
 
 /** The supporting numbers, kept to one muted line under the verdict. */
