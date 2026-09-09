@@ -51,7 +51,7 @@ You do not need this. The dashboard route in step 4 does the same job. But the
 CLI gets you a live URL without touching GitHub at all, which is the fastest
 path if you are short on time.
 
-The CLI is a Node package, so Node has to exist first, and this machine has
+The CLI is a Node package, so Node has to exist first. This machine started with
 neither Node nor Homebrew.
 
 ### Option A: Node installer, no Homebrew (fewest steps)
@@ -67,13 +67,37 @@ neither Node nor Homebrew.
 2. Open the `.pkg` and click through it. It asks for your password, because it
    writes to `/usr/local`.
 
-3. Confirm it landed, then install the CLI:
+3. Confirm it landed:
 
 ```bash
-node -v && npm -v && npm install -g vercel
+node -v && npm -v
+```
+
+4. Do **not** run `npm install -g vercel` yet. The Node installer leaves npm's
+   global prefix at `/usr/local`, which is owned by `root`, so a global install
+   as your own user fails with `EACCES: permission denied`. Point npm at your
+   home directory first:
+
+```bash
+npm config set prefix "$HOME/.npm-global" && echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc && source ~/.zshrc
+```
+
+5. Now the install works with no `sudo`:
+
+```bash
+npm install -g vercel
 ```
 
 Vercel CLI needs Node 18 or newer, so any current LTS is fine.
+
+> **Why not just `sudo npm install -g`?** It works, but every global package you
+> install afterwards runs its install scripts as root, and the files it leaves
+> behind are root-owned, so the next non-sudo install fails the same way. Moving
+> the prefix once fixes the cause instead of the symptom.
+
+> **Skipping the install entirely.** `npx vercel --prod` downloads and runs the
+> CLI on demand without installing anything, and needs no permission fix at all.
+> Good if you only intend to deploy once.
 
 ### Option B: via Homebrew
 
@@ -90,6 +114,9 @@ two `echo` lines to add it to your `PATH`. Run those before continuing, or the
 ```bash
 brew install node && npm install -g vercel
 ```
+
+Homebrew installs into `/opt/homebrew`, which you own, so the `EACCES` problem
+above does not arise on this route.
 
 ### Deploying with it
 
