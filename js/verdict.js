@@ -52,13 +52,13 @@ function rain(d) {
 
   if (chance >= 70 && mm >= 10) {
     return concern('rain', 3,
-      `Sit this one out — ${mm}mm at ${chance}% will soak through everything you own.`,
+      `Sit this one out. ${mm}mm at ${chance}% will soak through everything you own.`,
       'and the rain is relentless',
       ['shell', 'packcover', 'nocotton']);
   }
   if ((chance >= 60 && mm >= 2) || mm >= 5) {
     return concern('rain', 2,
-      `Go, but go waterproof — ${chance}% chance and about ${mm}mm to shed.`,
+      `Go, but go waterproof. ${chance}% chance and about ${mm}mm to shed.`,
       'with real rain to shed',
       ['shell', 'packcover', 'nocotton']);
   }
@@ -81,19 +81,19 @@ function heat(d) {
 
   if (t >= 38) {
     return concern('heat', 3,
-      `Too hot to walk safely — ${t}° feels-like is heat exhaustion territory once you are moving.`,
+      `Too hot to walk safely. ${t}° feels-like is heat exhaustion territory once you are moving.`,
       'in genuinely dangerous heat',
       ['water3', 'salts', 'sunhat', 'spf']);
   }
   if (t >= 32) {
     return concern('heat', 2,
-      `Start at first light and be finished by midday — it reaches ${t}° with no shade to hide in.`,
+      `Start at first light and be finished by midday. It reaches ${t}° with no shade to hide in.`,
       'and it gets seriously hot',
       ['water3', 'salts', 'sunhat']);
   }
   if (t >= 28) {
     return concern('heat', 1,
-      `Warm work at ${t}° — go early and carry more water than feels necessary.`,
+      `Warm work at ${t}°. Go early and carry more water than feels necessary.`,
       'and it will be warm',
       ['water2']);
   }
@@ -111,19 +111,19 @@ function cold(d) {
 
   if (t <= -5) {
     return concern('cold', 3,
-      `Properly cold at ${t}° — this is a day for equipment, not enthusiasm.`,
+      `Properly cold at ${t}°. This is a day for equipment, not enthusiasm.`,
       'in serious cold',
       ['fleece', 'gloveshat', 'traction']);
   }
   if (t <= 2) {
     return concern('cold', 2,
-      `Freezing at dawn at ${t}° — expect ice underfoot and useless fingers for the first hour.`,
+      `Freezing at dawn at ${t}°. Expect ice underfoot and useless fingers for the first hour.`,
       'and it freezes overnight',
       ['fleece', 'gloveshat']);
   }
   if (t <= 7) {
     return concern('cold', 1,
-      `Cold start at ${t}° — you will want a layer for the first hour and every stop after.`,
+      `Cold start at ${t}°. You will want a layer for the first hour and every stop after.`,
       'and it starts cold',
       ['fleece']);
   }
@@ -140,19 +140,19 @@ function wind(d) {
 
   if (g >= 60) {
     return concern('wind', 3,
-      `Stay off anything exposed — ${g} km/h gusts will take you off your feet on a ridge.`,
+      `Stay off anything exposed. ${g} km/h gusts will take you off your feet on a ridge.`,
       'in dangerous wind',
       ['windshell']);
   }
   if (g >= 40) {
     return concern('wind', 2,
-      `Hard going into ${g} km/h gusts — pick a sheltered route and expect to work for it.`,
+      `Hard going into ${g} km/h gusts. Pick a sheltered route and expect to work for it.`,
       'and the wind will fight you',
       ['windshell']);
   }
   if (g >= 25) {
     return concern('wind', 1,
-      `Breezy at ${g} km/h — you will feel it on open ground.`,
+      `Breezy at ${g} km/h. You will feel it on open ground.`,
       'and there is a breeze on open ground',
       []);
   }
@@ -169,19 +169,19 @@ function uv(d) {
 
   if (u >= 11) {
     return concern('uv', 3,
-      `Extreme sun at UV ${u} — bare skin burns in roughly ten minutes.`,
+      `Extreme sun at UV ${u}. Bare skin burns in roughly ten minutes.`,
       'under extreme sun',
       ['sunhat', 'spf', 'sunsleeves', 'sunglasses']);
   }
   if (u >= 8) {
     return concern('uv', 2,
-      `Very high sun at UV ${u} — cover up properly, sunscreen alone will not last the day.`,
+      `Very high sun at UV ${u}. Cover up properly, sunscreen alone will not last the day.`,
       'under hard sun',
       ['sunhat', 'spf', 'sunsleeves', 'sunglasses']);
   }
   if (u >= 6) {
     return concern('uv', 1,
-      `Strong sun at UV ${u} — hat on, and reapply at lunch.`,
+      `Strong sun at UV ${u}. Hat on, and reapply at lunch.`,
       'and the sun is strong',
       ['sunhat', 'spf']);
   }
@@ -198,7 +198,7 @@ function daylight(d) {
   if (hours === null || hours >= 9.5) return null;
 
   return concern('daylight', 1,
-    `Only ${hours.toFixed(1)} hours of light — a long route finishes in the dark.`,
+    `Only ${hours.toFixed(1)} hours of light, so a long route finishes in the dark.`,
     `and only ${hours.toFixed(1)} hours of light`,
     ['headtorch']);
 }
@@ -231,6 +231,7 @@ export function judgeDay(day, hoursForDay) {
 
   return {
     date: day.date,
+    code: day.code,
     level,
     band: BANDS[level],
     verdict: sentence,
@@ -253,12 +254,12 @@ function unremarkable(d) {
   const hi = round(d.tempMax ?? 0);
 
   if (hi >= 15 && hi <= 24) {
-    return `About as good as walking weather gets — ${lo}° to ${hi}°, dry, and no wind worth the name.`;
+    return `About as good as walking weather gets. ${lo}° to ${hi}°, dry, and no wind worth the name.`;
   }
   if (hi < 15) {
     return `Cool and clear at ${lo}° to ${hi}°. Nothing to plan around.`;
   }
-  return `Good day to be out — ${lo}° to ${hi}° and dry. Nothing to plan around.`;
+  return `Good day to be out. ${lo}° to ${hi}° and dry, with nothing to plan around.`;
 }
 
 /*
@@ -315,22 +316,22 @@ export function summariseTrip(verdicts) {
          : 'One day, and it is a good one.';
 
   } else if (bad.length === n) {
-    line = `Not a window worth booking — none of these ${n} days is worth a full day on foot.`;
+    line = `Not a window worth booking. None of these ${n} days is worth a full day on foot.`;
 
   } else if (bad.length === 0 && tricky.length === 0) {
-    line = `A clean run — all ${n} days are good walking, with nothing to plan around.`;
+    line = `A clean run. All ${n} days are good walking, with nothing to plan around.`;
 
   } else if (bad.length === 0 && clear.length === 0) {
-    line = `Nothing here is straightforward — all ${n} days need planning around.`;
+    line = `Nothing here is straightforward. All ${n} days need planning around.`;
 
   } else if (bad.length === 0 && clear.length >= tricky.length) {
-    line = `Mostly good — ${phrase(tricky, n, 'lead')} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest ${verb(clear.length, 'is', 'are')} straightforward walking.`;
+    line = `Mostly good. ${phrase(tricky, n, 'lead')} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest ${verb(clear.length, 'is', 'are')} straightforward walking.`;
 
   } else if (bad.length === 0) {
-    line = `A demanding window — only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward, and ${phrase(tricky, n, 'rest')} ${verb(tricky.length, 'needs', 'need')} real planning.`;
+    line = `A demanding window. Only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward, and ${phrase(tricky, n, 'rest')} ${verb(tricky.length, 'needs', 'need')} real planning.`;
 
   } else {
-    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} usable — ${phrase(bad, n, 'rest')} ${verb(bad.length, 'is', 'are')} a write-off.`;
+    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} usable, and ${phrase(bad, n, 'rest')} ${verb(bad.length, 'is', 'are')} a write-off.`;
   }
 
   return { line, sub: spine(verdicts) };
@@ -338,7 +339,7 @@ export function summariseTrip(verdicts) {
 
 /*
   Naming days only helps up to about three. Past that a reader stops parsing
-  the list and starts counting it, so we count for them — as "the other four"
+  the list and starts counting it, so we count for them, as "the other four"
   when the sentence has already named a total to subtract from, and as a plain
   count when it has not.
 */

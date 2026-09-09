@@ -13,7 +13,7 @@ done through the browser. That is the shorter path anyway.
 1. Go to <https://github.com/new>.
 2. **Repository name:** `fairweather`
 3. **Visibility:** Public.
-4. Leave *Add a README*, *.gitignore* and *licence* **unticked** — this project
+4. Leave *Add a README*, *.gitignore* and *licence* **unticked**. This project
    already has all three, and ticking them creates a conflicting first commit.
 5. Click **Create repository**.
 
@@ -22,7 +22,7 @@ GitHub then shows you a page with a URL like
 
 ## 2. Push
 
-The commit is already made. Point it at GitHub and push — replace
+The commit is already made. Point it at GitHub and push, replacing
 `YOUR-USERNAME`:
 
 ```bash
@@ -30,7 +30,7 @@ cd ~/Developer/fairweather && git remote add origin https://github.com/YOUR-USER
 ```
 
 Git will ask for a username and password. **The password is not your GitHub
-password** — GitHub stopped accepting those. It wants a Personal Access Token:
+password**, because GitHub stopped accepting those. It wants a Personal Access Token:
 
 1. Go to <https://github.com/settings/tokens?type=beta>.
 2. **Generate new token** → name it `fairweather`, expiry 30 days.
@@ -74,7 +74,7 @@ The brief rejects links that do not open, so actually do this:
 - [ ] Open the URL in a **private/incognito window** on your laptop. A logged-out
       browser is what the reviewer will use.
 - [ ] Open it on your **phone**, on mobile data rather than wi-fi.
-- [ ] Search a two-word city — **New Delhi**. It must not break.
+- [ ] Search a two-word city, **New Delhi**. It must not break.
 - [ ] Search **Springfield**. You should get the five-way choice screen.
 - [ ] Search something that does not exist. You should get an error, not a blank page.
 - [ ] Set the end date before the start date. You should get a sentence explaining it.
@@ -91,7 +91,7 @@ cd ~/Developer/fairweather && git add README.md && git commit -m "Add live URL" 
 ## If something goes wrong
 
 **Page loads but stays blank.** Open the browser console. A module failing to
-load means a filename case mismatch — Vercel's filesystem is case-sensitive and
+load means a filename case mismatch. Vercel's filesystem is case-sensitive and
 macOS is not, so `JS/main.js` works locally and 404s in production.
 
 **"Failed to fetch" in the console.** Open-Meteo is down or rate-limiting. The

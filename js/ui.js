@@ -6,6 +6,8 @@
    error, and it deserves its own screen.
 --------------------------------------------------------------------------- */
 
+import { iconFor, iconName, iconSvg } from './icons.js';
+
 
 const results = document.getElementById('results');
 
@@ -138,6 +140,12 @@ function renderDay(v) {
   const li = node.querySelector('.day');
 
   if (v.level >= 2) li.classList.add('day--flagged');
+
+  const key = iconFor(v.code);
+  const glyph = slot(node, 'icon');
+  glyph.className = 'wx';
+  glyph.title = iconName(key);
+  glyph.append(iconSvg(key));
 
   slot(node, 'weekday').textContent = weekday(v.date);
   slot(node, 'date').textContent = shortDate(v.date);

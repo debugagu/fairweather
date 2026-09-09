@@ -5,10 +5,10 @@ of the daylight hours, with nowhere convenient to duck inside. A day hiker.
 
 You give it a city and a stretch of up to fourteen days. It gives you back one
 line on the whole trip, a plain-language verdict for each individual day, and a
-single deduplicated packing list — not a wall of numbers.
+single deduplicated packing list, rather than a wall of numbers.
 
 **Live:** _add your Vercel URL here after deploying_
-**The note:** [`/note`](note.html) — thresholds, reasoning, and what was left out.
+**The note:** [`/note`](note.html). Thresholds, reasoning, and what was left out.
 
 ---
 
@@ -28,10 +28,11 @@ Then open <http://localhost:4173>.
 ```
 index.html      the app, plus a <template> for each of the five states
 note.html       the submission note, readable from the live URL
-styles.css      two typefaces, five colours
+styles.css      Geist and Geist Mono, five colours
 js/api.js       the two Open-Meteo calls, and every error the user might see
 js/verdict.js   every threshold in the product, in one file, on purpose
-js/ui.js        rendering and state switching — the only file that touches the DOM
+js/icons.js     seven hand-drawn weather glyphs, mapped from WMO codes
+js/ui.js        rendering and state switching, the only file that touches the DOM
 js/main.js      validation, the search sequence, shareable URLs
 ```
 

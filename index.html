@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fairweather — is this a good window to be walking?</title>
+<title>Fairweather: is this a good window to be walking?</title>
 <meta name="description" content="Enter a city and your dates. Fairweather reads the forecast the way a day hiker would and tells you which days are worth being out, and what to pack.">
 <meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>⛰</text></svg>">
 </head>
@@ -20,7 +23,7 @@
     <p class="standfirst">
       A forecast reader for one specific person: someone on foot, outdoors most of
       the daylight hours, with nowhere convenient to duck inside. Tell it where and
-      when, and it will tell you which days are worth it.
+      when, and it tells you which days are worth it.
     </p>
   </header>
 
@@ -64,9 +67,9 @@
   <section class="state state--empty">
     <p class="state-lead">Nothing searched yet.</p>
     <p class="state-body">
-      Pick a city and a stretch of up to fourteen days. You will get a one-line read
-      on the trip, a verdict for each individual day, and a single packing list for
-      the whole thing.
+      Pick a city and a stretch of up to fourteen days. You get a one-line read on
+      the trip, a verdict for each individual day, and a single packing list for the
+      whole thing.
     </p>
     <p class="state-body state-body--quiet">
       Verdicts are written for a day hiker. If you are going to a wedding, ignore
@@ -118,8 +121,8 @@
     <h2 class="section-head">Pack for the whole trip</h2>
     <ul class="packing" data-slot="packing"></ul>
     <p class="packing-note">
-      Weather-driven only. Your ordinary kit &mdash; boots, map, food, first aid &mdash;
-      is assumed and deliberately not listed.
+      Weather-driven only. Your ordinary kit (boots, map, food, first aid) is
+      assumed and left off on purpose.
     </p>
 
   </section>
@@ -127,7 +130,10 @@
 
 <template id="t-day">
   <li class="day">
-    <p class="day-date"><span data-slot="weekday"></span> <span class="day-date-num" data-slot="date"></span></p>
+    <div class="day-head">
+      <span data-slot="icon"></span>
+      <p class="day-date"><span data-slot="weekday"></span> <span class="day-date-num" data-slot="date"></span></p>
+    </div>
     <p class="day-band" data-slot="band"></p>
     <p class="day-verdict" data-slot="verdict"></p>
     <p class="day-window" data-slot="window"></p>

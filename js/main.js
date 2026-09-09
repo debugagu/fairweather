@@ -28,7 +28,7 @@ endInput.max = horizon;
 startInput.value = today;
 endInput.value = isoDate(addDays(new Date(), 4));
 
-ui.setNote(`Any window up to ${MAX_DAYS_AHEAD} days ahead — through ${prettyDate(horizon)}.`);
+ui.setNote(`Any window up to ${MAX_DAYS_AHEAD} days ahead, through ${prettyDate(horizon)}.`);
 
 form.addEventListener('submit', event => {
   event.preventDefault();
@@ -86,7 +86,7 @@ async function run(rawCity, start, end) {
     return;
   }
 
-  ui.setNote(`Any window up to ${MAX_DAYS_AHEAD} days ahead — through ${prettyDate(horizon)}.`);
+  ui.setNote(`Any window up to ${MAX_DAYS_AHEAD} days ahead, through ${prettyDate(horizon)}.`);
 
   const mine = ++requestId;
   ui.showLoading(`Looking up ${city}…`);
@@ -104,7 +104,7 @@ async function run(rawCity, start, end) {
     ui.markInvalid('city', true);
     return ui.showError(
       `No city called “${city}”.`,
-      'Check the spelling, or add the country — "Springfield, Illinois" rather than "Springfield".',
+      'Check the spelling, or add the country. "Springfield, Illinois" rather than "Springfield".',
       null
     );
   }

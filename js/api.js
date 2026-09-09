@@ -54,7 +54,7 @@ async function getJson(url) {
   }
 }
 
-/* Step 1 — city name to coordinates ---------------------------------------- */
+/* Step 1: city name to coordinates ----------------------------------------- */
 
 /**
  * Returns every plausible match, up to five. Deliberately does not choose.
@@ -85,9 +85,10 @@ export async function findPlaces(name) {
   }));
 }
 
-/* Step 2 — coordinates and dates to a forecast ----------------------------- */
+/* Step 2: coordinates and dates to a forecast ------------------------------ */
 
 const DAILY = [
+  'weather_code',
   'temperature_2m_max',
   'temperature_2m_min',
   'apparent_temperature_max',
@@ -137,6 +138,7 @@ export async function fetchForecast(place, startDate, endDate) {
     timezone: data.timezone,
     days: daily.time.map((date, i) => ({
       date,
+      code:         daily.weather_code?.[i],
       tempMax:      daily.temperature_2m_max?.[i],
       tempMin:      daily.temperature_2m_min?.[i],
       feelsMax:     daily.apparent_temperature_max?.[i],

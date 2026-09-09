@@ -3,9 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How Fairweather decides — the note</title>
-<meta name="description" content="The thresholds behind Fairweather, why they are set where they are, what was deliberately left out, and what would come next.">
+<title>How Fairweather decides</title>
+<meta name="description" content="The thresholds behind Fairweather, why they sit where they do, what was left out, and what would come next.">
 <meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>⛰</text></svg>">
 </head>
@@ -17,8 +20,8 @@
 <header class="masthead">
   <h1>The note</h1>
   <p class="standfirst">
-    What Fairweather decides, where the numbers come from, and the three or four
-    places where I chose one thing over another.
+    What Fairweather decides, where the numbers come from, and the few places
+    where I chose one thing over another.
   </p>
 </header>
 
@@ -32,11 +35,11 @@
 </p>
 
 <p>
-  That is the only decision in this project that mattered, because every number
-  below follows from it. A hiker cannot step into a café when the sun turns,
-  cannot get off a ridge quickly, and is working hard the whole time. Thirty-two
-  degrees is a pleasant afternoon if you are wandering between air-conditioned
-  shops and a genuine problem if you are four hours into a walk. Advice that
+  That is the only decision in this project that really mattered, because every
+  number below follows from it. A hiker cannot step into a café when the sun
+  turns, cannot get off a ridge quickly, and is working hard the whole time.
+  Thirty-two degrees is a pleasant afternoon if you are wandering between
+  air-conditioned shops and a real problem four hours into a walk. Advice that
   tries to serve both ends up serving neither, so the app says on its own front
   page that if you are going to a wedding, you should ignore it.
 </p>
@@ -44,9 +47,9 @@
 <h2>The workflow, end to end</h2>
 
 <p>
-  Everything below happens in the browser on each search. There is no server,
-  no database and no cache, so a stale response is not a failure mode this
-  product has.
+  Everything below happens in the browser on each search. There is no server, no
+  database and no cache, so a stale response is not a failure mode this product
+  has.
 </p>
 
 <h3>1. The city becomes a question, not an answer</h3>
@@ -57,16 +60,16 @@
 </p>
 
 <ul>
-  <li><b>No matches</b> — an error state that suggests adding a country, because that is what actually fixes it.</li>
-  <li><b>One match</b> — used, but the resolved place is printed above the results. You always know which town you are reading about.</li>
-  <li><b>Two or more</b> — a screen of its own. Each option shows its region, country, population and coordinates, because "Springfield, Illinois, population 114,394" is enough to choose and "Springfield" is not.</li>
+  <li><b>No matches.</b> An error state that suggests adding a country, because that is what actually fixes it.</li>
+  <li><b>One match.</b> Used, but the resolved place is printed above the results. You always know which town you are reading about.</li>
+  <li><b>Two or more.</b> A screen of its own. Each option shows its region, country, population and coordinates, because "Springfield, Illinois, population 114,394" is enough to choose between and "Springfield" is not.</li>
 </ul>
 
 <p>
   Population is shown for one reason: it is the fastest way for a person to
   recognise the place they meant. It is not used to rank or auto-select.
-  Silently taking the first result would have been three fewer lines of code
-  and a worse product.
+  Silently taking the first result would have been three fewer lines of code and
+  a worse product.
 </p>
 
 <h3>2. The forecast is fetched for exactly the dates asked for</h3>
@@ -74,15 +77,15 @@
 <p>
   The chosen coordinates and the two dates go to the forecast endpoint with
   <code>timezone=auto</code>, so days break at local midnight rather than
-  wherever the reader happens to be. Eleven daily fields come back, plus two
+  wherever the reader happens to be. Twelve daily fields come back, plus two
   hourly series.
 </p>
 
 <p>
-  The date inputs are bounded at both ends: no earlier than today, no later
-  than fourteen days out. Anything the browser lets through anyway is caught
-  again in JavaScript before a request is made, because a native date picker is
-  a suggestion, not a guarantee. Past dates are refused rather than silently
+  The date inputs are bounded at both ends: no earlier than today, no later than
+  fourteen days out. Anything the browser lets through anyway is caught again in
+  JavaScript before a request is made, because a native date picker is a
+  suggestion rather than a guarantee. Past dates are refused rather than quietly
   redirected to the archive API, since a forecast and a historical record are
   different products and pretending otherwise would be dishonest.
 </p>
@@ -99,7 +102,7 @@
 
 <p>
   Whichever concern scored highest writes the verdict. Ties break on a fixed
-  order — heat, wind, cold, rain, UV, daylight — ranked by what actually injures
+  order (heat, wind, cold, rain, UV, daylight) ranked by what actually injures
   someone on foot rather than by what feels dramatic.
 </p>
 
@@ -122,9 +125,9 @@
     <tr>
       <td>Rain</td>
       <td>≥35% or ≥1mm</td>
-      <td>≥60% <em>and</em> ≥2mm, or ≥5mm</td>
-      <td>≥70% <em>and</em> ≥10mm</td>
-      <td>Probability alone lies. A 70% chance of half a millimetre is a non-event; 12mm at 55% soaks through anything that is not a proper shell. Both signals or neither.</td>
+      <td>≥60% and ≥2mm, or ≥5mm</td>
+      <td>≥70% and ≥10mm</td>
+      <td>Probability alone lies. A 70% chance of half a millimetre is a non-event; 12mm at 55% soaks through anything that is not a proper shell. Both signals, or neither.</td>
     </tr>
     <tr>
       <td>Heat</td>
@@ -137,7 +140,7 @@
       <td>Cold</td>
       <td>7°</td>
       <td>2°</td>
-      <td>−5°</td>
+      <td>&minus;5°</td>
       <td>Read off the apparent minimum, because a hiker meets the minimum at dawn and at every stop, not while moving. 2° means ice underfoot and hands that stop working.</td>
     </tr>
     <tr>
@@ -157,9 +160,9 @@
     <tr>
       <td>Daylight</td>
       <td>&lt;9.5 h</td>
-      <td>—</td>
-      <td>—</td>
-      <td>Capped at level 1 on purpose. Short days never make weather bad, but they quietly decide how long a route can be, and no forecast app tells you in a usable form.</td>
+      <td>n/a</td>
+      <td>n/a</td>
+      <td>Capped at level 1 on purpose. Short days never make weather bad, but they quietly decide how long a route can be, and no forecast app reports it in a usable form.</td>
     </tr>
   </tbody>
 </table>
@@ -170,14 +173,14 @@
 <p>
   The verdict still has to be one sentence, so the rule is deliberately strict.
   The dominant concern writes it. Exactly one other concern may add a trailing
-  clause, and only if it is serious enough to change what you do — or if the
-  day is mild enough that two small notes fit comfortably. A serious sentence
-  is never given company:
+  clause, and only if it is serious enough to change what you do, or if the day
+  is mild enough that two small notes fit comfortably. A serious sentence is
+  never given company:
 </p>
 
 <p class="aside">
-  "Start at first light and be finished by midday — it reaches 36° with no
-  shade to hide in, and the wind will fight you."
+  "Start at first light and be finished by midday. It reaches 36° with no shade
+  to hide in, and the wind will fight you."
 </p>
 
 <p>
@@ -190,14 +193,14 @@
 
 <p>
   Most days are unremarkable, and most tools handle them either by saying
-  nothing or by inventing drama. Here an unremarkable day gets the shortest
-  card on the page, no colour, no marker, and one confident sentence that uses
-  the real numbers as reassurance:
+  nothing or by inventing drama. Here an unremarkable day gets the shortest card
+  on the page, no colour, no marker, and one confident sentence that uses the
+  real numbers as reassurance:
 </p>
 
 <p class="aside">
-  "About as good as walking weather gets — 10° to 18°, dry, and no wind worth
-  the name."
+  "About as good as walking weather gets. 10° to 18°, dry, and no wind worth the
+  name."
 </p>
 
 <p>
@@ -205,34 +208,57 @@
   on days scoring 2 or 3: if everything is marked, nothing is.
 </p>
 
-<h2>What I left out on purpose</h2>
+<h2>The icons, and what they are not</h2>
+
+<ul class="legend" id="legend"></ul>
 
 <p>
-  <b>Cloud cover.</b> It is the field almost every weather app leads with, and
-  it is close to irrelevant to whether a day on foot is good. An overcast 19°
-  day is excellent walking. Sunshine hours would have made the interface look
-  richer and the advice worse, so the app never fetches the field.
+  Seven glyphs, drawn by hand as monochrome strokes, mapped from the WMO weather
+  code that Open-Meteo returns. They are collapsed from roughly thirty codes,
+  because the difference between "light drizzle" and "moderate drizzle" is not
+  something a twenty-one pixel glyph can carry, and the verdict has already said
+  it in words.
 </p>
 
 <p>
-  Two smaller omissions follow the same reasoning. Humidity is not shown as its
-  own number, because apparent temperature already contains it and shows it in
-  the only form that matters — how hard the day will feel. And the packing list
-  is weather-driven only: no boots, no map, no first aid. Padding it with things
-  you would take anyway would make it longer and less trustworthy.
+  They are descriptive and nothing else. No icon touches any threshold. An
+  overcast day still reads "about as good as walking weather gets", because
+  cloud has almost nothing to do with whether a walk is worth taking. The glyph
+  is there because people orient by it, not because it was allowed into the
+  judgement.
+</p>
+
+<h2>What I left out on purpose</h2>
+
+<p>
+  <b>The hourly chart.</b> The app fetches an hourly series and draws none of
+  it. Every other weather tool puts a twenty-four hour graph on the screen and
+  leaves you to read it, which is exactly the wall of numbers this product was
+  built against. The hourly data is used instead to produce one sentence: "wet
+  until about 13:00, then it clears, start late". That is the same information,
+  already decided.
+</p>
+
+<p>
+  Three smaller omissions follow the same reasoning. Cloud cover is drawn but
+  never scored, as above. Humidity is not shown as its own number, because
+  apparent temperature already contains it in the only form that matters, which
+  is how hard the day will feel. And the packing list is weather-driven only:
+  no boots, no map, no first aid. Padding it with things you would take anyway
+  would make it longer and less trustworthy.
 </p>
 
 <h2>What I would build next</h2>
 
 <ol>
   <li>
-    <b>Confidence, not just values.</b> A ten-day-out forecast is treated
-    exactly like a two-day-out one, which is wrong. The next version would
-    compare model runs and soften the language as the horizon extends —
-    "probably" is a real piece of information and the app currently withholds it.
+    <b>Confidence, not just values.</b> A ten-day-out forecast is treated exactly
+    like a two-day-out one, which is wrong. The next version would compare model
+    runs and soften the language as the horizon extends. "Probably" is real
+    information and the app currently withholds it.
   </li>
   <li>
-    <b>Terrain.</b> Coordinates carry an elevation the app already receives and
+    <b>Terrain.</b> The geocoding response already carries an elevation the app
     ignores. A 25 km/h wind at 2,400 m is a different day from the same wind at
     sea level, and altitude would let the thresholds move rather than staying
     fixed.
@@ -248,11 +274,10 @@
 <h2>What it is built with</h2>
 
 <p>
-  Plain HTML, CSS and JavaScript. Four small ES modules, no framework, no build
-  step, no dependencies, nothing to install. Two typefaces that ship with the
-  operating system — Garamond for anything that is a judgement, Trebuchet MS for
-  anything that is a number — and five colours, one of which has a job.
-  Deployed as static files on Vercel.
+  Plain HTML, CSS and JavaScript. Five small ES modules, no framework, no build
+  step, no dependencies, nothing to install. Geist for text and Geist Mono for
+  figures, so numbers that change between days do not shift the columns they sit
+  in. Five colours, one of which has a job. Deployed as static files on Vercel.
 </p>
 
 <p>
@@ -261,9 +286,9 @@
 </p>
 
 <p>
-  I used Claude Code as a pair while building it. The product decisions — the
-  audience, the six concerns, where each threshold sits, what to leave out —
-  are mine, and every threshold in the app is in one file so they can be
+  I used Claude Code as a pair while building it. The product decisions, meaning
+  the audience, the six concerns, where each threshold sits and what to leave
+  out, are mine. Every threshold in the app lives in one file so that it can be
   argued with.
 </p>
 
@@ -274,5 +299,21 @@
 </footer>
 
 </div>
+
+<script type="module">
+  import { iconSvg, iconName } from './js/icons.js';
+  const legend = document.getElementById('legend');
+  for (const key of ['clear', 'partly', 'overcast', 'fog', 'rain', 'snow', 'storm']) {
+    const li = document.createElement('li');
+    const glyph = document.createElement('span');
+    glyph.className = 'wx';
+    glyph.append(iconSvg(key));
+    const label = document.createElement('span');
+    label.textContent = iconName(key);
+    li.append(glyph, label);
+    legend.append(li);
+  }
+</script>
+
 </body>
 </html>
