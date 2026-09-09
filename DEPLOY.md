@@ -3,8 +3,9 @@
 Static files, no build step. From an empty machine this takes about ten minutes,
 most of which is waiting.
 
-You have no `gh` or `vercel` CLI installed, so both the repo and the deploy are
-done through the browser. That is the shorter path anyway.
+You have no `gh` or `vercel` CLI installed, so the repo and the deploy below are
+done through the browser. That is the shorter path. Step 3 covers the CLI if
+you want it.
 
 ---
 
@@ -44,7 +45,72 @@ macOS stores it in the keychain, so you are only asked once.
 > [GitHub Desktop](https://desktop.github.com), open this folder, and press
 > Publish. Same result.
 
-## 3. Deploy on Vercel
+## 3. Optional: the Vercel CLI
+
+You do not need this. The dashboard route in step 4 does the same job. But the
+CLI gets you a live URL without touching GitHub at all, which is the fastest
+path if you are short on time.
+
+The CLI is a Node package, so Node has to exist first, and this machine has
+neither Node nor Homebrew.
+
+### Option A: Node installer, no Homebrew (fewest steps)
+
+1. Download the macOS **ARM64** `.pkg` from <https://nodejs.org/en/download>.
+   Pick the LTS line, currently **v24.x (Krypton)**. Apple Silicon is arm64, so
+   take the ARM64 build rather than x64; the x64 one runs under Rosetta and is
+   slower for no reason.
+
+   Direct link for the current LTS:
+   <https://nodejs.org/dist/v24.21.0/node-v24.21.0.pkg>
+
+2. Open the `.pkg` and click through it. It asks for your password, because it
+   writes to `/usr/local`.
+
+3. Confirm it landed, then install the CLI:
+
+```bash
+node -v && npm -v && npm install -g vercel
+```
+
+Vercel CLI needs Node 18 or newer, so any current LTS is fine.
+
+### Option B: via Homebrew
+
+Worth it only if you expect to install other developer tools later.
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Homebrew on Apple Silicon installs to `/opt/homebrew`, and the installer prints
+two `echo` lines to add it to your `PATH`. Run those before continuing, or the
+`brew` command will not be found in a new shell. Then:
+
+```bash
+brew install node && npm install -g vercel
+```
+
+### Deploying with it
+
+From the project folder, log in once, then ship:
+
+```bash
+cd ~/Developer/fairweather && vercel login
+```
+
+```bash
+cd ~/Developer/fairweather && vercel --prod
+```
+
+The first run asks a handful of questions. Accept the defaults: scope is your
+own account, "link to existing project" is **no**, project name `fairweather`,
+directory `./`, and **do not** override the build settings. It detects a static
+site, uploads the files, and prints the production URL.
+
+Redeploy any time with `vercel --prod` from the same folder.
+
+## 4. Deploy on Vercel
 
 1. Go to <https://vercel.com/new> and sign in **with GitHub**. Signing in this
    way is what makes your repos appear in the next step.
@@ -67,7 +133,7 @@ You get a URL like `https://fairweather-xyz123.vercel.app`. Under
 
 Every later `git push` to `main` redeploys automatically.
 
-## 4. Check it before you submit
+## 5. Check it before you submit
 
 The brief rejects links that do not open, so actually do this:
 
@@ -80,7 +146,7 @@ The brief rejects links that do not open, so actually do this:
 - [ ] Set the end date before the start date. You should get a sentence explaining it.
 - [ ] Visit `/note` and confirm it loads.
 
-## 5. Put the URL in the README
+## 6. Put the URL in the README
 
 ```bash
 cd ~/Developer/fairweather && git add README.md && git commit -m "Add live URL" && git push
