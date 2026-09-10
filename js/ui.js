@@ -115,9 +115,9 @@ export function showReport({ place, verdicts, summary, packing, ambiguous }, onR
   if (packing.length === 0) {
     const li = document.createElement('li');
     const label = document.createElement('b');
-    label.textContent = 'Nothing weather-specific.';
+    label.textContent = 'Nothing extra needed.';
     const why = document.createElement('span');
-    why.textContent = 'No day on this trip asks for anything beyond your usual kit.';
+    why.textContent = 'Nothing beyond your usual kit.';
     li.append(label, why);
     list.append(li);
   } else {
@@ -174,7 +174,7 @@ function renderDay(v) {
 function rows(f) {
   const out = [
     ['Temp', `${f.tempMin}° to ${f.tempMax}°`],
-    ['Feels like', `${f.feelsMax}° at worst`],
+    ['Feels like', `${f.feelsMax}° max`],
     ['Rain', `${f.rainChance ?? 0}% · ${f.rainTotal}mm`],
     ['UV', `${f.uvMax ?? 0}`],
     ['Gusts', `${f.gustMax ?? 0} km/h`]

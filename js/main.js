@@ -47,7 +47,7 @@ function validate(city, start, end) {
   }
   if (city.trim().length < 2) {
     ui.markInvalid('city', true);
-    return 'That is too short to be a city.';
+    return 'That is too short to be a city name.';
   }
   if (!start || !end) {
     ui.markInvalid(!start ? 'start' : 'end', true);
@@ -59,15 +59,15 @@ function validate(city, start, end) {
   }
   if (start < today) {
     ui.markInvalid('start', true);
-    return 'This forecasts forwards only. Pick a start date from today onwards.';
+    return 'Start date must be today or later.';
   }
   if (end > horizon) {
     ui.markInvalid('end', true);
-    return `Forecasts stop being worth reading past ${prettyDate(horizon)}. Bring the end date back.`;
+    return `Forecasts only run to ${prettyDate(horizon)}. Bring the end date back.`;
   }
   if (daysBetween(start, end) + 1 > MAX_SPAN) {
     ui.markInvalid('end', true);
-    return `That is longer than ${MAX_SPAN} days. Split it into two trips.`;
+    return `Maximum range is ${MAX_SPAN} days.`;
   }
   return null;
 }
@@ -82,7 +82,7 @@ async function run(rawCity, start, end) {
 
   if (problem) {
     ui.setNote(problem, 'bad');
-    ui.showError('That search will not work.', problem, null);
+    ui.showError('Check the search.', problem, null);
     return;
   }
 
@@ -104,7 +104,7 @@ async function run(rawCity, start, end) {
     ui.markInvalid('city', true);
     return ui.showError(
       `No city called “${city}”.`,
-      'Check the spelling, or add the country. "Springfield, Illinois" rather than "Springfield".',
+      'Check the spelling, or add a country. Try "Springfield, Illinois".',
       null
     );
   }

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fairweather: is this a good window to be walking?</title>
-<meta name="description" content="Enter a city and your dates. Fairweather reads the forecast the way a day hiker would and tells you which days are worth being out, and what to pack.">
+<title>Fairweather: weather advice for walking days</title>
+<meta name="description" content="Enter a city and your dates. Fairweather tells you which days are good for walking and what to pack.">
 <meta name="color-scheme" content="light dark">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -21,9 +21,8 @@
   <header class="masthead">
     <h1>Fairweather</h1>
     <p class="standfirst">
-      A forecast reader for one specific person: someone on foot, outdoors most of
-      the daylight hours, with nowhere convenient to duck inside. Tell it where and
-      when, and it tells you which days are worth it.
+      Tells you which days of your trip are good for walking, and what to pack.
+      The advice assumes you will be outdoors most of the day, away from shelter.
     </p>
   </header>
 
@@ -51,11 +50,11 @@
 
   <footer class="colophon">
     <p>
-      Forecast and geocoding from <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a>,
-      fetched live in your browser each time you search. Nothing is stored.
+      Forecast data from <a href="https://open-meteo.com" rel="noopener">Open-Meteo</a>,
+      fetched live on each search.
     </p>
     <p>
-      <a href="note.html">How the verdicts are decided &rarr;</a>
+      <a href="note.html">How the verdicts are decided</a>
     </p>
   </footer>
 
@@ -67,13 +66,7 @@
   <section class="state state--empty">
     <p class="state-lead">Nothing searched yet.</p>
     <p class="state-body">
-      Pick a city and a stretch of up to fourteen days. You get a one-line read on
-      the trip, a verdict for each individual day, and a single packing list for the
-      whole thing.
-    </p>
-    <p class="state-body state-body--quiet">
-      Verdicts are written for a day hiker. If you are going to a wedding, ignore
-      this tool.
+      Enter a city and your dates, up to 14 days ahead.
     </p>
   </section>
 </template>
@@ -97,8 +90,7 @@
   <section class="state state--choose">
     <p class="state-lead" data-slot="title"></p>
     <p class="state-body">
-      More than one place goes by that name. We are not going to guess which one you
-      meant.
+      More than one place has this name. Pick the one you meant.
     </p>
     <ul class="choices" data-slot="list"></ul>
   </section>
@@ -121,8 +113,7 @@
     <h2 class="section-head">Pack for the whole trip</h2>
     <ul class="packing" data-slot="packing"></ul>
     <p class="packing-note">
-      Weather-driven only. Your ordinary kit (boots, map, food, first aid) is
-      assumed and left off on purpose.
+      Weather items only. Boots, map, food and first aid are assumed.
     </p>
 
   </section>

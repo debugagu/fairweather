@@ -30,8 +30,8 @@ async function getJson(url) {
     throw new ApiError(
       navigator.onLine ? 'The weather service did not answer.' : 'You appear to be offline.',
       navigator.onLine
-        ? 'Open-Meteo took too long or refused the request. It is usually back within a minute.'
-        : 'Fairweather reads the forecast live, so it needs a connection. Reconnect and try again.'
+        ? 'Open-Meteo did not respond in time. It is usually back within a minute.'
+        : 'The forecast is fetched live, so a connection is needed. Reconnect and try again.'
     );
   } finally {
     clearTimeout(timer);
@@ -40,7 +40,7 @@ async function getJson(url) {
   if (!response.ok) {
     throw new ApiError(
       'The weather service returned an error.',
-      `Open-Meteo answered with ${response.status}. If this keeps happening the service is probably having a moment.`
+      `Open-Meteo answered with ${response.status}. Try again shortly.`
     );
   }
 
@@ -122,7 +122,7 @@ export async function fetchForecast(place, startDate, endDate) {
   if (data.error) {
     throw new ApiError(
       'Those dates were refused.',
-      data.reason || 'Open-Meteo would not forecast that range. Try a window closer to today.'
+      data.reason || 'Open-Meteo would not forecast that range. Try dates closer to today.'
     );
   }
 
@@ -130,7 +130,7 @@ export async function fetchForecast(place, startDate, endDate) {
   if (!daily || !Array.isArray(daily.time) || daily.time.length === 0) {
     throw new ApiError(
       'No forecast came back for those dates.',
-      'Open-Meteo had nothing for that window. Try dates closer to today.'
+      'Open-Meteo returned nothing for that range. Try dates closer to today.'
     );
   }
 

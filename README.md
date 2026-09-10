@@ -1,11 +1,10 @@
 # Fairweather
 
-A forecast reader for one specific person: someone on foot, outdoors for most
-of the daylight hours, with nowhere convenient to duck inside. A day hiker.
+Tells you which days of a trip are good for walking, and what to pack. The
+advice assumes a day hiker: outdoors most of the day, away from shelter.
 
-You give it a city and a stretch of up to fourteen days. It gives you back one
-line on the whole trip, a plain-language verdict for each individual day, and a
-single deduplicated packing list, rather than a wall of numbers.
+Enter a city and up to fourteen days. You get one line on the whole trip, a
+plain-language verdict per day, and a single deduplicated packing list.
 
 **Live:** _add your Vercel URL here after deploying_
 **The note:** [`/note`](note.html). Thresholds, reasoning, and what was left out.
@@ -37,13 +36,13 @@ js/main.js      validation, the search sequence, shareable URLs
 ```
 
 `js/verdict.js` is the one worth reading. It holds all six concerns, their
-thresholds, the tie-break order, the packing rules and the copy. Changing what
-the product believes means changing that file and nothing else.
+thresholds, the tie-break order, the packing rules and the wording. Changing
+what the app decides means changing that file only.
 
 ## The five states
 
 Four were asked for. The fifth exists because "which Springfield did you mean"
-is a question, not an error.
+is a question rather than an error.
 
 | State | When |
 | --- | --- |
