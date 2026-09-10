@@ -37,6 +37,13 @@ async function getJson(url) {
     clearTimeout(timer);
   }
 
+  if (response.status === 429) {
+    throw new ApiError(
+      'Too many searches for now.',
+      'Open-Meteo limits how often it can be called from one place. Wait a minute and try again.'
+    );
+  }
+
   if (!response.ok) {
     throw new ApiError(
       'The weather service returned an error.',

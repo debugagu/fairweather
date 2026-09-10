@@ -37,9 +37,19 @@ export function showLoading(message) {
   swap(node);
 }
 
-export function showError(title, detail, onRetry) {
+export function showError(title, detail, onRetry, tone = 'error') {
   results.setAttribute('aria-busy', 'false');
   const node = template('t-error');
+
+  // A search that found nothing is not a failure, and colouring it like one
+  // makes people think the app broke.
+  if (tone === 'notice') {
+    const section = node.querySelector('.state');
+    section.classList.remove('state--error');
+    section.classList.add('state--notice');
+    section.removeAttribute('role');
+  }
+
   slot(node, 'title').textContent = title;
   slot(node, 'detail').textContent = detail;
 

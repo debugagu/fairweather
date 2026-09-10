@@ -33,10 +33,10 @@
 const PRIORITY = ['heat', 'wind', 'cold', 'rain', 'uv', 'daylight'];
 
 export const BANDS = {
-  0: 'Good',
+  0: 'Good day',
   1: 'Mostly fine',
   2: 'Plan around it',
-  3: 'Avoid'
+  3: 'Do not go'
 };
 
 /* Concerns ----------------------------------------------------------------- */

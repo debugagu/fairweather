@@ -52,9 +52,15 @@ Rain, heat, cold, wind, UV and daylight. Each returns a level: 0 not worth
 mentioning, 1 worth knowing, 2 changes the plan, 3 do not go. The day takes the
 highest level reached.
 
-**4. One concern writes the sentence.**
+**4. One concern writes the answer.**
 The highest-scoring one. Ties break on a fixed order (heat, wind, cold, rain,
 UV, daylight), ordered by what is most likely to cause actual harm.
+
+Each day shows three tiers, in this order and this size order. The call
+(**Good day**, **Mostly fine**, **Plan around it**, **Do not go**) is the largest
+thing on the card. The reason is one line under it. The numbers are the smallest
+thing there. If you have to read a temperature to know what the app is telling
+you, the hierarchy is wrong.
 
 **5. The rest go to the packing list.**
 Concerns that did not write the sentence still contribute items. A day whose
@@ -102,6 +108,44 @@ taking.
 
 ---
 
+## The five states
+
+| State | When | What it shows |
+| --- | --- | --- |
+| Empty | Before any search | What the tool does, what you get, and what to type |
+| Loading | While either request is in flight | A skeleton, plus which city is being looked up |
+| Choosing | Two or more places share the name | Each candidate with region, country, population, coordinates |
+| Nothing found | The city does not exist | A plain notice, deliberately not styled as a failure |
+| Error | Bad dates, API down, rate limited | What went wrong in words, and a retry |
+| Results | A forecast came back | The report |
+
+Nothing found and Error are separated on purpose. A search that returns nothing
+is not a crash, and colouring it red makes people think the app broke.
+
+---
+
+## The number I would watch
+
+Not visits, and not time on page, because both go up when a product is confusing.
+The number that would tell me this worked is **the share of searches where
+someone changes their dates and searches again**. Reading a forecast is not the
+point. Changing a plan is. That is the only behaviour that shows the verdict
+actually did something.
+
+Second to that: whether anyone comes back for a second trip.
+
+---
+
+## Colour
+
+The page sits on a blue gradient, and exactly one colour carries meaning: the
+rust used on days scoring 2 or 3, on their marker, their glyph and their heading.
+It appears nowhere else. The blue is a background, not an accent, so the rule of
+one working accent still holds. Good days get no colour at all, because marking
+every day would make the marks useless.
+
+---
+
 ## One thing I left out on purpose
 
 **The hourly chart.** The app fetches an hourly series and draws none of it.
@@ -132,8 +176,8 @@ listing things you would bring anyway makes the list longer and less useful.
 
 Plain HTML, CSS and JavaScript. Five ES modules, no framework, no build step, no
 dependencies. Geist and Geist Mono, with figures set in the mono so columns do
-not shift between days. Five colours, one of which is only used for warnings.
-Deployed as static files on Vercel.
+not shift between days. Deployed as static files on Vercel, which needs no
+environment variables because the app has no key and no server.
 
 Data is Open-Meteo's free geocoding and forecast endpoints, called live from the
 browser on each search. No key, no proxy, nothing stored.

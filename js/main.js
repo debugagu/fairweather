@@ -105,7 +105,8 @@ async function run(rawCity, start, end) {
     return ui.showError(
       `No city called “${city}”.`,
       'Check the spelling, or add a country. Try "Springfield, Illinois".',
-      null
+      null,
+      'notice'
     );
   }
 

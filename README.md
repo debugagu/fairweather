@@ -27,7 +27,7 @@ Then open <http://localhost:4173>.
 ```
 index.html      the app, plus a <template> for each of the five states
 note.html       the submission note, readable from the live URL
-styles.css      Geist and Geist Mono, five colours
+styles.css      Geist and Geist Mono, blue ground, one working accent
 js/api.js       the two Open-Meteo calls, and every error the user might see
 js/verdict.js   every threshold in the product, in one file, on purpose
 js/icons.js     seven hand-drawn weather glyphs, mapped from WMO codes
@@ -41,15 +41,17 @@ what the app decides means changing that file only.
 
 ## The five states
 
-Four were asked for. The fifth exists because "which Springfield did you mean"
-is a question rather than an error.
+Four were asked for. "Choosing" exists because "which Springfield did you mean"
+is a question rather than an error, and "nothing found" is kept separate from
+"error" because a search returning nothing is not a crash.
 
 | State | When |
 | --- | --- |
-| Empty | Before any search |
+| Empty | Before any search. Explains what the tool does |
 | Loading | While either request is in flight |
 | Choosing | Two or more places share the name |
-| Error | City not found, bad dates, or the API failed |
+| Nothing found | The city does not exist. Deliberately not styled as a failure |
+| Error | Bad dates, API down, or rate limited |
 | Results | A forecast came back |
 
 ## Data

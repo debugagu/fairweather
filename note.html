@@ -90,11 +90,19 @@
   highest level reached.
 </p>
 
-<h3>4. One concern writes the sentence</h3>
+<h3>4. One concern writes the answer</h3>
 
 <p>
   The highest-scoring one. Ties break on a fixed order (heat, wind, cold, rain,
   UV, daylight), ordered by what is most likely to cause actual harm.
+</p>
+
+<p>
+  Each day shows three tiers, in this order and this size order. The call
+  (<b>Good day</b>, <b>Mostly fine</b>, <b>Plan around it</b>, <b>Do not go</b>)
+  is the largest thing on the card. The reason sits in one line under it. The
+  numbers are the smallest thing there. If you have to read a temperature to
+  know what the app is telling you, the hierarchy is wrong.
 </p>
 
 <h3>5. The rest go to the packing list</h3>
@@ -208,6 +216,48 @@
   walk is worth taking.
 </p>
 
+<h2>The five states</h2>
+
+<div class="scroller">
+<table>
+  <thead><tr><th>State</th><th>When</th><th>What it shows</th></tr></thead>
+  <tbody>
+    <tr><td>Empty</td><td>Before any search</td><td>What the tool does, what you get, and what to type</td></tr>
+    <tr><td>Loading</td><td>While a request is in flight</td><td>A skeleton, plus which city is being looked up</td></tr>
+    <tr><td>Choosing</td><td>Two or more places share a name</td><td>Each candidate with region, country, population, coordinates</td></tr>
+    <tr><td>Nothing found</td><td>The city does not exist</td><td>A plain notice, deliberately not styled as a failure</td></tr>
+    <tr><td>Error</td><td>Bad dates, API down, rate limited</td><td>What went wrong in words, and a retry</td></tr>
+    <tr><td>Results</td><td>A forecast came back</td><td>The report</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>
+  Nothing found and Error are separated on purpose. A search that returns nothing
+  is not a crash, and colouring it red makes people think the app broke.
+</p>
+
+<h2>The number I would watch</h2>
+
+<p>
+  Not visits, and not time on page, because both go up when a product is
+  confusing. The number that would tell me this worked is the share of searches
+  where someone changes their dates and searches again. Reading a forecast is not
+  the point. Changing a plan is. That is the only behaviour showing the verdict
+  actually did something. Second to that: whether anyone comes back for a second
+  trip.
+</p>
+
+<h2>Colour</h2>
+
+<p>
+  The page sits on a blue gradient, and exactly one colour carries meaning: the
+  rust used on days scoring 2 or 3, on their marker, their glyph and their
+  heading. It appears nowhere else. The blue is a background rather than an
+  accent, so the rule of one working accent still holds. Good days get no colour
+  at all, because marking every day would make the marks useless.
+</p>
+
 <h2>One thing I left out on purpose</h2>
 
 <p>
@@ -238,8 +288,8 @@
 <p>
   Plain HTML, CSS and JavaScript. Five ES modules, no framework, no build step,
   no dependencies. Geist and Geist Mono, with figures set in the mono so columns
-  do not shift between days. Five colours, one of which is only used for
-  warnings. Deployed as static files on Vercel.
+  do not shift between days. Deployed as static files on Vercel, which needs no
+  environment variables because the app has no key and no server.
 </p>
 
 <p>
