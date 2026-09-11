@@ -19,7 +19,7 @@ cases would be too vague to act on, so I picked one.
 
 ## The workflow, end to end
 
-Everything runs in the browser on each search. No server, no database, no cache.
+Everything runs in the browser on each search, and nothing is kept between them.
 
 **1. City name to coordinates.**
 The typed name goes to Open-Meteo's geocoding endpoint asking for up to five
@@ -69,9 +69,9 @@ it. The list is deduplicated twice: once by item, and once by redundancy, since 
 waterproof shell is already windproof and three litres of capacity covers two.
 
 **6. Hourly data answers "when", not "whether".**
-Within daylight hours the app locates the rain and reports *"Rain clears around
-13:00. Better to start late."* rather than "70% chance of rain". That is the only
-reason the hourly series is fetched.
+Within daylight hours the app locates the rain and reports *"The rain clears
+around 13:00, so there is a good afternoon in this if you start late."* instead
+of "70% chance of rain". That is the only reason the hourly series is fetched.
 
 ---
 
@@ -93,11 +93,13 @@ that two small notes fit, as in *"Start early and finish by midday. Feels like
 34° in the afternoon. Also strong wind."* Three are never listed, because past
 two it turns back into a weather report.
 
-**Unremarkable days.** Most days are unremarkable. They get the shortest card on
-the page, no colour, no marker, and one sentence using the real numbers:
-*"Good walking weather. 12° to 20°, dry, light wind."* Not flagging a day is
-itself useful information. It is also why colour only appears at levels 2 and 3;
-marking every day would make the marks useless.
+**Unremarkable days.** Most days are unremarkable, so they get the quietest card
+on the page and text that branches on the small differences between one settled
+day and the next: *"Cold but clean. 8° all day and dry, which is better walking
+weather than it sounds. Barely a few degrees in it from dawn to dusk, which makes
+packing simple."* Leaving a day unflagged is itself useful information, which is
+also why colour only appears at levels 2 and 3. Marking every day would make the
+marks useless.
 
 **Icons.** Seven glyphs drawn as monochrome strokes, mapped from the WMO weather
 code Open-Meteo returns and collapsed from about thirty codes, since a 21px glyph
@@ -186,8 +188,8 @@ every day would make the marks useless.
 
 **The hourly chart.** The app fetches an hourly series and draws none of it.
 Most weather tools put a 24-hour graph on screen and leave you to interpret it.
-Here the same data produces one instruction instead: *"Rain clears around 13:00.
-Better to start late."*
+Here the same data produces one instruction instead: *"The rain clears around
+13:00, so there is a good afternoon in this if you start late."*
 
 Three smaller omissions. Cloud cover is drawn as a glyph but never scored.
 Humidity is not shown separately, because apparent temperature already accounts
@@ -210,14 +212,17 @@ listing things you would bring anyway makes the list longer and less useful.
 
 ## Built with
 
-Plain HTML, CSS and JavaScript. Five ES modules, no framework, no build step, no
-dependencies. Geist and Geist Mono, with figures set in the mono so columns do
-not shift between days. Deployed as static files on Vercel, which needs no
-environment variables because the app has no key and no server.
+Plain HTML, CSS and JavaScript. Five ES modules and nothing to install. Geist and
+Geist Mono, with figures set in the mono so the columns hold still between days.
+Deployed as static files on Vercel, which needs no configuration because there is
+nothing running on the server side.
 
-Data is Open-Meteo's free geocoding and forecast endpoints, called live from the
-browser on each search. No key, no proxy, nothing stored.
+Data comes from Open-Meteo's free geocoding and forecast endpoints, called live
+from the browser on each search. Both are open, so there is no key to leak.
 
-I used Claude Code as a pair while building it. The product decisions, meaning
-the audience, the six concerns, where each threshold sits and what to leave out,
-are mine. All of them live in one file (`js/verdict.js`).
+Built with AI assistance, using Claude Code. It was quickest at the parts that
+were already decided: markup, CSS, and the plumbing around two API calls. The
+rest took longer. Who this advises, where every threshold sits, what to leave
+out and how a verdict should read are my calls, and a fair share of the work was
+cutting text that read as machine-written. The thresholds all sit in one file,
+`js/verdict.js`, so they are easy to argue with.

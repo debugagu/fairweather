@@ -44,8 +44,8 @@
 <h2>The workflow, end to end</h2>
 
 <p>
-  Everything below runs in the browser on each search. There is no server, no
-  database and no cache.
+  Everything below runs in the browser on each search, and nothing is kept
+  between them.
 </p>
 
 <h3>1. City name to coordinates</h3>
@@ -167,6 +167,39 @@
 </table>
 </div>
 
+<h2>How the writing works</h2>
+
+<p>Every verdict is three sentences, in the same order:</p>
+
+<ol>
+  <li>What kind of day this is.</li>
+  <li>What the number actually means once you are out in it.</li>
+  <li>What to do about it.</li>
+</ol>
+
+<p>
+  The middle sentence is the one that earns the product. A forecast can already
+  tell you 6mm. It cannot tell you that 6mm soaks a fleece through and stops
+  there, which is the part that decides whether you go.
+</p>
+
+<p class="aside">
+  <b>Plan around it.</b> You will get wet, but it is still a day out. Around 6mm
+  at 70%, which is enough to soak a fleece through and not much more than that.
+  Shell on from the start, and keep one dry layer in the pack.
+</p>
+
+<p>
+  Good days were the harder ones to write. Most days on most trips are
+  unremarkable, so a single sentence repeated down the page reads as filler
+  however well written it is. The good-day text branches on conditions that are
+  real but never bad enough to become a concern: a bit of breeze, moderate sun,
+  a wide or narrow temperature swing, a long or short day. Across a settled
+  eight-day spell that produces eight different paragraphs. The closing sentence
+  is dropped when it has nothing to add, so some days run to two sentences and
+  some to three, because uniform length is its own kind of tell.
+</p>
+
 <h2>Several problems on one day</h2>
 
 <p>
@@ -188,8 +221,8 @@
 <h2>Unremarkable days</h2>
 
 <p>
-  Most days are unremarkable. They get no colour and no marker, and the text
-  branches on the small real differences between one settled day and the next:
+  Most days are unremarkable, so they get the quietest card on the page and text
+  that branches on the small differences between one settled day and the next:
 </p>
 
 <p class="aside">
@@ -266,8 +299,8 @@
 <p>
   <b>The hourly chart.</b> The app fetches an hourly series and draws none of it.
   Most weather tools put a 24-hour graph on screen and leave you to interpret it.
-  Here the same data produces one instruction instead: "Rain clears around 13:00.
-  Better to start late."
+  Here the same data produces one instruction instead: "The rain clears around
+  13:00, so there is a good afternoon in this if you start late."
 </p>
 
 <p>
@@ -289,21 +322,25 @@
 <h2>Built with</h2>
 
 <p>
-  Plain HTML, CSS and JavaScript. Five ES modules, no framework, no build step,
-  no dependencies. Geist and Geist Mono, with figures set in the mono so columns
-  do not shift between days. Deployed as static files on Vercel, which needs no
-  environment variables because the app has no key and no server.
+  Plain HTML, CSS and JavaScript. Five ES modules and nothing to install. Geist
+  and Geist Mono, with figures set in the mono so the columns hold still between
+  days. Deployed as static files on Vercel, which needs no configuration because
+  there is nothing running on the server side.
 </p>
 
 <p>
-  Data is Open-Meteo's free geocoding and forecast endpoints, called live from
-  the browser on each search. No key, no proxy, nothing stored.
+  Data comes from Open-Meteo's free geocoding and forecast endpoints, called
+  live from the browser on each search. Both are open, so there is no key to
+  leak.
 </p>
 
 <p>
-  I used Claude Code as a pair while building it. The product decisions, meaning
-  the audience, the six concerns, where each threshold sits and what to leave
-  out, are mine. All of them live in one file.
+  Built with AI assistance, using Claude Code. It was quickest at the parts that
+  were already decided: markup, CSS, and the plumbing around two API calls. The
+  rest took longer. Who this advises, where every threshold sits, what to leave
+  out and how a verdict should read are my calls, and a fair share of the work
+  was cutting text that read as machine-written. The thresholds all sit in one
+  file, so they are easy to argue with.
 </p>
 
 </div>

@@ -13,8 +13,8 @@ plain-language verdict per day, and a single deduplicated packing list.
 
 ## Running it locally
 
-There is no build step and there are no dependencies, but the app uses ES
-modules, so it has to be served over HTTP rather than opened as a file.
+Nothing to install, but the app uses ES modules, so it has to be served over
+HTTP rather than opened as a file.
 
 ```bash
 python3 -m http.server 4173
@@ -57,8 +57,8 @@ is a question rather than an error, and "nothing found" is kept separate from
 ## Data
 
 [Open-Meteo](https://open-meteo.com) geocoding and forecast endpoints, called
-live from the browser on every search. No API key, no proxy, no server, no
-cache, nothing stored.
+live from the browser on every search. Both endpoints are open, so there is no
+key to configure and nothing runs server side.
 
 ## Deploying
 
