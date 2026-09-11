@@ -41,9 +41,12 @@
       <input id="end" name="end" type="date" required>
     </div>
     <div class="field field--height">
-      <label for="height">Climbing to</label>
-      <input id="height" name="height" type="number" inputmode="numeric"
-             min="0" max="9000" step="50" placeholder="optional">
+      <label for="height">Climbing to <span class="sr-only">in metres</span></label>
+      <div class="with-unit">
+        <input id="height" name="height" type="number" inputmode="numeric"
+               min="0" max="9000" step="50" placeholder="2400">
+        <span class="unit" aria-hidden="true">m</span>
+      </div>
     </div>
     <div class="field field--action">
       <button type="submit">Read the forecast</button>
@@ -94,8 +97,9 @@
       shelter. Forecasts run up to 14 days ahead. Type a city above to start.
     </p>
     <p class="state-body state-body--quiet">
-      If you give it a height, every figure is recalculated for up there instead
-      of the town, because that is where you will actually be.
+      Climbing to is optional. Give it the height in metres you expect to reach
+      and every figure is recalculated for up there instead of the town, because
+      that is where you will actually be.
     </p>
   </section>
 </template>

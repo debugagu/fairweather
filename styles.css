@@ -474,7 +474,7 @@ td:nth-child(2), td:nth-child(3), td:nth-child(4) {
 
 /* Altitude ----------------------------------------------------------------- */
 
-.field--height { flex: 0 0 8rem; }
+.field--height { flex: 0 0 9rem; }
 .field--height input { font-family: var(--mono); font-size: .86rem; }
 
 .altitude-note {
@@ -490,3 +490,35 @@ td:nth-child(2), td:nth-child(3), td:nth-child(4) {
 @media (max-width: 34rem) {
   .field--height { flex: 1 1 100%; }
 }
+
+/* Inputs carrying a unit ---------------------------------------------------- */
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+.with-unit { position: relative; display: flex; }
+.with-unit input { width: 100%; padding-right: 2.1rem; }
+
+/* Always visible, so the unit does not vanish the moment a number is typed. */
+.with-unit .unit {
+  position: absolute;
+  right: .75rem; top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--mono);
+  font-size: .82rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+/* The spinner would sit exactly where the unit does. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
