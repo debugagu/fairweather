@@ -6,7 +6,7 @@ advice assumes a day hiker: outdoors most of the day, away from shelter.
 Enter a city and up to fourteen days. You get one line on the whole trip, a
 plain-language verdict per day, and a single deduplicated packing list.
 
-**Live:** _add your Vercel URL here after deploying_
+**Live:** <https://fairweather-plum.vercel.app>
 **The note:** [`/note`](note.html). Thresholds, reasoning, and what was left out.
 
 ---

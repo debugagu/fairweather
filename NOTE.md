@@ -1,6 +1,7 @@
 # Fairweather: the note
 
-**Live:** _add your Vercel URL here_ · **Repo:** _add your GitHub URL here_
+**Live:** https://fairweather-plum.vercel.app
+**Repo:** https://github.com/debugagu/fairweather
 The same note is on the live site at `/note`.
 
 ---

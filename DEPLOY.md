@@ -19,15 +19,15 @@ you want it.
 5. Click **Create repository**.
 
 GitHub then shows you a page with a URL like
-`https://github.com/YOUR-USERNAME/fairweather.git`. Keep it open.
+`https://github.com/debugagu/fairweather.git`. Keep it open.
 
 ## 2. Push
 
 The commit is already made. Point it at GitHub and push, replacing
-`YOUR-USERNAME`:
+`debugagu`:
 
 ```bash
-cd ~/Developer/fairweather && git remote add origin https://github.com/YOUR-USERNAME/fairweather.git && git push -u origin main
+cd ~/Developer/fairweather && git remote add origin https://github.com/debugagu/fairweather.git && git push -u origin main
 ```
 
 Git will ask for a username and password. **The password is not your GitHub
