@@ -118,8 +118,15 @@ export function showReport({ place, verdicts, summary, packing, ambiguous }, onR
     rechoose.remove();
   }
 
+  const heroStats = slot(node, 'hero-stats');
+  tripStats(verdicts).forEach(([term, value]) => heroStats.append(statCell(term, value)));
+
   const days = slot(node, 'days');
-  verdicts.forEach(v => days.append(renderDay(v)));
+  verdicts.forEach((v, i) => {
+    const card = renderDay(v);
+    card.querySelector('.day').style.setProperty('--stagger', `${Math.min(i, 8) * 45}ms`);
+    days.append(card);
+  });
 
   const list = slot(node, 'packing');
   if (packing.length === 0) {
@@ -159,22 +166,41 @@ function renderDay(v) {
 
   slot(node, 'weekday').textContent = weekday(v.date);
   slot(node, 'date').textContent = shortDate(v.date);
+  slot(node, 'temp').textContent = `${v.figures.tempMax}° / ${v.figures.tempMin}°`;
   slot(node, 'band').textContent = v.band;
   slot(node, 'verdict').textContent = v.verdict;
   slot(node, 'window').textContent = v.window;
 
   const figures = slot(node, 'figures');
-  rows(v.figures).forEach(([term, value]) => {
-    const wrap = document.createElement('div');
-    const dt = document.createElement('dt');
-    dt.textContent = term;
-    const dd = document.createElement('dd');
-    dd.textContent = value;
-    wrap.append(dt, dd);
-    figures.append(wrap);
-  });
+  rows(v.figures).forEach(([term, value]) => figures.append(statCell(term, value)));
 
   return node;
+}
+
+function statCell(term, value) {
+  const wrap = document.createElement('div');
+  const dt = document.createElement('dt');
+  dt.textContent = term;
+  const dd = document.createElement('dd');
+  dd.textContent = value;
+  wrap.append(dt, dd);
+  return wrap;
+}
+
+/* The three figures worth knowing before reading any individual day. */
+function tripStats(verdicts) {
+  const lows = verdicts.map(v => v.figures.tempMin).filter(n => typeof n === 'number');
+  const highs = verdicts.map(v => v.figures.tempMax).filter(n => typeof n === 'number');
+  const totalRain = verdicts.reduce((sum, v) => sum + (v.figures.rainTotal || 0), 0);
+  const goodDays = verdicts.filter(v => v.level <= 1).length;
+
+  // "Worth having" is the summary sentence's phrase and means anything that is
+  // not a write-off. This counts something narrower, so it needs its own label.
+  return [
+    ['Range', lows.length ? `${Math.min(...lows)}° to ${Math.max(...highs)}°` : 'n/a'],
+    ['Rain over the trip', `${Math.round(totalRain)}mm`],
+    ['Need no planning', `${goodDays} of ${verdicts.length}`]
+  ];
 }
 
 /*
@@ -183,8 +209,7 @@ function renderDay(v) {
 */
 function rows(f) {
   const out = [
-    ['Temp', `${f.tempMin}° to ${f.tempMax}°`],
-    ['Feels like', `${f.feelsMax}° max`],
+    ['Feels like', `${f.feelsMax}°`],
     ['Rain', `${f.rainChance ?? 0}% · ${f.rainTotal}mm`],
     ['UV', `${f.uvMax ?? 0}`],
     ['Gusts', `${f.gustMax ?? 0} km/h`]

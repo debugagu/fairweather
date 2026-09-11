@@ -119,13 +119,17 @@
 <template id="t-results">
   <section class="report">
 
-    <div class="place">
-      <p class="place-name" data-slot="place"></p>
-      <button type="button" class="linky" data-action="rechoose" hidden>Not this one?</button>
-    </div>
+    <div class="hero">
+      <div class="place">
+        <p class="place-name" data-slot="place"></p>
+        <button type="button" class="linky" data-action="rechoose" hidden>Not this one?</button>
+      </div>
 
-    <p class="summary" data-slot="summary"></p>
-    <p class="summary-sub" data-slot="summary-sub"></p>
+      <p class="summary" data-slot="summary"></p>
+      <p class="summary-sub" data-slot="summary-sub"></p>
+
+      <dl class="hero-stats" data-slot="hero-stats"></dl>
+    </div>
 
     <h2 class="section-head">Day by day</h2>
     <ol class="days" data-slot="days"></ol>
@@ -144,6 +148,7 @@
     <div class="day-head">
       <span data-slot="icon"></span>
       <p class="day-date"><span data-slot="weekday"></span> <span class="day-date-num" data-slot="date"></span></p>
+      <p class="day-temp" data-slot="temp"></p>
     </div>
     <p class="day-band" data-slot="band"></p>
     <p class="day-verdict" data-slot="verdict"></p>

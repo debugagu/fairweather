@@ -58,7 +58,7 @@ UV, daylight), ordered by what is most likely to cause actual harm.
 
 Each day shows three tiers, in this order and this size order. The call
 (**Good day**, **Mostly fine**, **Plan around it**, **Do not go**) is the largest
-thing on the card. The reason is one line under it. The numbers are the smallest
+thing on the card. The reasoning sits under it. The numbers are the smallest
 thing there. If you have to read a temperature to know what the app is telling
 you, the hierarchy is wrong.
 
@@ -105,6 +105,42 @@ cannot show the difference between light and moderate drizzle. They are
 descriptive only and feed into no threshold. An overcast day still reads "good
 walking weather", because cloud has little to do with whether a walk is worth
 taking.
+
+---
+
+## How the writing works
+
+Every verdict is three sentences, in the same order:
+
+1. What kind of day this is.
+2. What the number actually means once you are out in it.
+3. What to do about it.
+
+The middle sentence is the one that earns the product. A forecast can already
+tell you 6mm. It cannot tell you that 6mm soaks a fleece through and stops
+there, which is the part that decides whether you go.
+
+> **Plan around it**
+> You will get wet, but it is still a day out. Around 6mm at 70%, which is
+> enough to soak a fleece through and not much more than that. Shell on from
+> the start, and keep one dry layer in the pack.
+
+**Good days are the hard ones to write.** Most days on most trips are
+unremarkable, so a single sentence repeated down the page reads as filler
+however well written it is. The good-day text branches on conditions that are
+real but never bad enough to become a concern: a bit of breeze, moderate sun, a
+wide or narrow temperature swing, a long or short day. Across a settled
+eight-day spell that produces eight different paragraphs. Two days read the same
+only when they genuinely are the same.
+
+The closing sentence is dropped when there is nothing useful to add, so some
+days run to two sentences and some to three. Uniform length is its own kind of
+tell.
+
+> **Good day**
+> A proper walking day. 12° to 20°, dry, and the sort of range you stop noticing
+> after an hour. A light breeze across open ground, nothing you will have to
+> lean into.
 
 ---
 

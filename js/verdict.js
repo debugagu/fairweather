@@ -42,9 +42,20 @@ export const BANDS = {
 /* Concerns ----------------------------------------------------------------- */
 
 /*
+  Each concern writes three sentences, in the same order every time:
+
+    1. What kind of day this is.
+    2. What the number actually means once you are out in it.
+    3. What to do about it.
+
+  The middle sentence is the one that matters. A forecast can tell you 6mm; it
+  cannot tell you that 6mm soaks a fleece and stops there. That translation is
+  the only thing this app adds, so it gets its own sentence.
+*/
+
+/*
   Rain needs both signals. A high chance of a trace amount is not worth a
-  warning, and a large amount at moderate odds is. Probability on its own would
-  flag the first and miss the second.
+  warning, and a large amount at moderate odds is.
 */
 function rain(d) {
   const chance = d.rainChance ?? 0;
@@ -52,20 +63,20 @@ function rain(d) {
 
   if (chance >= 70 && mm >= 10) {
     return concern('rain', 3,
-      `Not worth going out. ${mm}mm of rain, ${chance}% chance.`,
-      'Also heavy rain.',
+      `This one is a write-off. ${mm}mm over the day is past the point where waterproofs keep helping, and tracks start moving underfoot. Take the day indoors and walk tomorrow instead.`,
+      'There is heavy rain with it.',
       ['shell', 'packcover', 'nocotton']);
   }
   if ((chance >= 60 && mm >= 2) || mm >= 5) {
     return concern('rain', 2,
-      `Take a waterproof. ${chance}% chance of rain, around ${mm}mm.`,
-      'Also rain to deal with.',
+      `You will get wet, but it is still a day out. Around ${mm}mm at ${chance}%, which is enough to soak a fleece through and not much more than that. Shell on from the start, and keep one dry layer in the pack.`,
+      'There is real rain with it.',
       ['shell', 'packcover', 'nocotton']);
   }
   if (chance >= 35 || mm >= 1) {
     return concern('rain', 1,
-      `Showers possible, ${chance}%. Nothing that should stop you.`,
-      'Also showers about.',
+      `Showers around, nothing that changes the plan. A ${chance}% chance means you might walk through one and might not. Take a light shell and carry on.`,
+      'There are showers around too.',
       ['shell']);
   }
   return null;
@@ -80,20 +91,20 @@ function heat(d) {
 
   if (t >= 38) {
     return concern('heat', 3,
-      `Too hot to walk safely. Feels like ${t}°.`,
-      'Also dangerous heat.',
+      `Too hot to be walking. ${t}° with the humidity in it is the range where sweating stops cooling you and heat exhaustion comes on quickly. This is not a day to push through.`,
+      'It is dangerously hot with it.',
       ['water3', 'salts', 'sunhat', 'spf']);
   }
   if (t >= 32) {
     return concern('heat', 2,
-      `Start early and finish by midday. Feels like ${t}° in the afternoon.`,
-      'Also very hot.',
+      `Front-load this one. It climbs to ${t}° by early afternoon, and on open ground there is nowhere to sit it out. Start at first light and be somewhere cool by midday.`,
+      'It gets very hot with it.',
       ['water3', 'salts', 'sunhat']);
   }
   if (t >= 28) {
     return concern('heat', 1,
-      `Warm at ${t}°. Start early and take extra water.`,
-      'Also warm.',
+      `Warm enough to notice. ${t}° is fine while you are moving, but it adds up across a long day and catches people out late. Start early and carry a litre more than you think you need.`,
+      'It runs warm too.',
       ['water2']);
   }
   return null;
@@ -108,20 +119,20 @@ function cold(d) {
 
   if (t <= -5) {
     return concern('cold', 3,
-      `Very cold, ${t}° at dawn. Full winter kit or stay in.`,
-      'Also severe cold.',
+      `Serious cold. ${t}° at dawn takes the feeling out of bare hands inside twenty minutes, and anything wet freezes on contact. Go properly equipped or go another day.`,
+      'It is severely cold with it.',
       ['fleece', 'gloveshat', 'traction']);
   }
   if (t <= 2) {
     return concern('cold', 2,
-      `Below freezing at dawn, ${t}°. Expect ice on the path.`,
-      'Also freezing at dawn.',
+      `Hard frost overnight. It sits at ${t}° at first light, so expect ice on flat stone and fingers that stop working for the first hour. Gloves and a warm hat, not optional.`,
+      'It freezes overnight too.',
       ['fleece', 'gloveshat']);
   }
   if (t <= 7) {
     return concern('cold', 1,
-      `Cold start at ${t}°. Take a warm layer for the first hour.`,
-      'Also a cold start.',
+      `A cold start that warms up. ${t}° at dawn feels sharper than it sounds the moment you stand still. Take a layer you can shed by mid-morning.`,
+      'It starts cold too.',
       ['fleece']);
   }
   return null;
@@ -136,20 +147,20 @@ function wind(d) {
 
   if (g >= 60) {
     return concern('wind', 3,
-      `Keep off exposed ground. Gusts to ${g} km/h.`,
-      'Also dangerous wind.',
+      `Stay low today. Gusts to ${g} km/h knock you off balance on open ground, and a ridge at that speed is dangerous rather than unpleasant. Valley routes, or leave it.`,
+      'The wind is dangerous with it.',
       ['windshell']);
   }
   if (g >= 40) {
     return concern('wind', 2,
-      `Gusts to ${g} km/h. Pick a sheltered route.`,
-      'Also strong wind.',
+      `The wind is the story today. Gusts to ${g} km/h mean working against it on anything open, and it pulls heat out of you faster than the temperature suggests. Pick a sheltered line.`,
+      'The wind will fight you too.',
       ['windshell']);
   }
   if (g >= 25) {
     return concern('wind', 1,
-      `Breezy, gusts to ${g} km/h. Noticeable on open ground.`,
-      'Also breezy.',
+      `Breezy, and nothing beyond that. ${g} km/h gusts are noticeable crossing open ground and disappear the moment you are in trees. Worth a windproof, not worth changing route.`,
+      'It is breezy with it.',
       []);
   }
   return null;
@@ -164,20 +175,20 @@ function uv(d) {
 
   if (u >= 11) {
     return concern('uv', 3,
-      `Extreme sun, UV ${u}. Avoid open ground between 11:00 and 16:00.`,
-      'Also extreme sun.',
+      `The sun is the hazard today. UV ${u} burns exposed skin in about ten minutes, and light coming back off rock or snow doubles what reaches you. Stay off open ground between eleven and four.`,
+      'The sun is extreme with it.',
       ['sunhat', 'spf', 'sunsleeves', 'sunglasses']);
   }
   if (u >= 8) {
     return concern('uv', 2,
-      `Strong sun, UV ${u}. Hat, sunscreen, and cover your arms.`,
-      'Also strong sun.',
+      `Strong sun the whole way through. At UV ${u} sunscreen on its own gives out after a few hours of sweating into it. Long sleeves, a brimmed hat, and top up at lunch.`,
+      'The sun is strong with it.',
       ['sunhat', 'spf', 'sunsleeves', 'sunglasses']);
   }
   if (u >= 6) {
     return concern('uv', 1,
-      `UV ${u}. Hat and sunscreen, reapply at lunch.`,
-      'Also strong sun.',
+      `Bright, with real strength in it. UV ${u} catches the back of your neck and the tops of your ears long before you feel it happening. Hat on from the start.`,
+      'The sun has strength in it too.',
       ['sunhat', 'spf']);
   }
   return null;
@@ -192,8 +203,8 @@ function daylight(d) {
   if (hours === null || hours >= 9.5) return null;
 
   return concern('daylight', 1,
-    `Only ${hours.toFixed(1)} hours of daylight. Keep the route short.`,
-    'Also short daylight.',
+    `Short day. ${hours.toFixed(1)} hours of usable light is less than it sounds once a slow start eats into it. Pick a route you can finish with an hour spare.`,
+    'The light runs out early too.',
     ['headtorch']);
 }
 
@@ -246,14 +257,47 @@ export function judgeDay(day, hoursForDay) {
 function unremarkable(d) {
   const lo = round(d.tempMin ?? 0);
   const hi = round(d.tempMax ?? 0);
+  const gust = round(d.gustMax ?? d.windMax ?? 0);
+  const sun = round(d.uvMax ?? 0, 1);
+  const light = daylightHours(d);
+  const spread = hi - lo;
+  const range = lo === hi ? `${lo}° all day` : `${lo}° to ${hi}°`;
 
-  if (hi >= 15 && hi <= 24) {
-    return `Good walking weather. ${lo}° to ${hi}°, dry, light wind.`;
-  }
-  if (hi < 15) {
-    return `Cool and dry, ${lo}° to ${hi}°. Nothing to worry about.`;
-  }
-  return `Fine for walking. ${lo}° to ${hi}° and dry.`;
+  /*
+    Most days on most trips land here, so one sentence repeated down the page
+    would read as filler however well written it is. All three parts branch on
+    conditions that are real but never bad enough to become a concern: a bit of
+    breeze, moderate sun, a wide or narrow temperature swing, a long or short
+    day. Two days read the same only when they genuinely are the same.
+
+    The closing line is dropped when there is nothing useful to add, which
+    leaves some days at two sentences and some at three. Uniform length is its
+    own kind of tell.
+  */
+  const opener =
+      hi >= 25 ? `Warm and settled. ${range}, dry the whole way through.`
+    : hi >= 20 ? `A proper walking day. ${range}, dry, and the sort of range you stop noticing after an hour.`
+    : hi >= 15 ? `About as good as it gets. ${range}, dry, and nothing in the sky worth watching.`
+    : hi >= 9  ? `Cool and clear. ${range} is comfortable once you are moving, though you will feel it at stops.`
+    :            `Cold but clean. ${range} and dry, which is better walking weather than it sounds.`;
+
+  const middle =
+      gust >= 15 && sun >= 4   ? ` Enough breeze to keep you cool, enough sun to be worth a hat.`
+    : gust >= 15               ? ` A light breeze across open ground, nothing you will have to lean into.`
+    : sun >= 4                 ? ` The sun has some presence without ever being a problem.`
+    : spread >= 12             ? ` A wide swing between dawn and mid-afternoon, so take something you can shed.`
+    : spread <= 4              ? ` Barely a few degrees in it from dawn to dusk, which makes packing simple.`
+    : light !== null && light >= 12.5 ? ` ${light.toFixed(0)} hours of light, so distance is not the limiting factor.`
+    : light !== null && light < 11     ? ` The light is short enough that a late start costs you real distance.`
+    :                            ` Still air, and nothing much asked of you.`;
+
+  const close =
+      hi >= 25                       ? ` Keep water going in and go as far as you like.`
+    : hi < 9                         ? ` Layer up at the start and enjoy having the hills to yourself.`
+    : light !== null && light >= 13  ? ` Go as far as the legs hold out.`
+    :                                  '';
+
+  return opener + middle + close;
 }
 
 /*
@@ -275,7 +319,7 @@ function timingNote(day, hours) {
     // Nothing useful to say about rain timing, so fall back to sun timing.
     const fierce = inDaylight.filter(h => (h.uv ?? 0) >= 7).map(h => h.hour);
     if (fierce.length >= 2) {
-      return `Strongest sun between ${clock(fierce[0])} and ${clock(fierce[fierce.length - 1] + 1)}.`;
+      return `Sun is hardest between ${clock(fierce[0])} and ${clock(fierce[fierce.length - 1] + 1)}.`;
     }
     return '';
   }
@@ -286,10 +330,10 @@ function timingNote(day, hours) {
   const afternoonOnly = wetStart >= (first + last) / 2;
   const scattered = wet.length > 2 && (wetEnd - wetStart + 1) > wet.length + 1;
 
-  if (scattered) return 'Showers on and off through the day.';
-  if (morningOnly) return `Rain clears around ${clock(wetEnd + 1)}. Better to start late.`;
-  if (afternoonOnly) return `Dry until about ${clock(wetStart)}, then rain. Start early.`;
-  return `Rain mostly between ${clock(wetStart)} and ${clock(wetEnd + 1)}.`;
+  if (scattered) return 'Showers come and go all day rather than settling into one band.';
+  if (morningOnly) return `The rain clears around ${clock(wetEnd + 1)}, so there is a good afternoon in this if you start late.`;
+  if (afternoonOnly) return `Dry until about ${clock(wetStart)}, then it turns. Get the distance done early.`;
+  return `The worst of it sits between ${clock(wetStart)} and ${clock(wetEnd + 1)}.`;
 }
 
 /* The trip in one line ----------------------------------------------------- */
@@ -305,27 +349,27 @@ export function summariseTrip(verdicts) {
 
   if (n === 1) {
     const only = verdicts[0].level;
-    line = only === 3 ? 'One day, and it is a write-off.'
-         : only === 2 ? 'One day, and it needs planning.'
-         : 'One day, and it looks good.';
+    line = only === 3 ? 'One day, and it is a write-off. Move it if you can.'
+         : only === 2 ? 'One day, and it will take some planning.'
+         : 'One day, and you have picked a good one.';
 
   } else if (bad.length === n) {
-    line = `None of these ${n} days is good for walking.`;
+    line = `Not a week for it. None of these ${n} days is worth a full day on foot.`;
 
   } else if (bad.length === 0 && tricky.length === 0) {
-    line = `All ${n} days look good for walking.`;
+    line = `A good window for it. All ${n} days are walkable with nothing to plan around.`;
 
   } else if (bad.length === 0 && clear.length === 0) {
-    line = `All ${n} days need planning around.`;
+    line = `Every one of these ${n} days needs planning around. None is a write-off, but none is straightforward either.`;
 
   } else if (bad.length === 0 && clear.length >= tricky.length) {
-    line = `Mostly good. ${phrase(tricky, n, 'lead')} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest ${verb(clear.length, 'is', 'are')} fine.`;
+    line = `Mostly good. ${phrase(tricky, n, 'lead')} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest you can take as they come.`;
 
   } else if (bad.length === 0) {
-    line = `Only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward. ${capitalise(phrase(tricky, n, 'rest'))} ${verb(tricky.length, 'needs', 'need')} planning.`;
+    line = `A demanding week. Only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward, and ${phrase(tricky, n, 'rest')} ${verb(tricky.length, 'needs', 'need')} working around.`;
 
   } else {
-    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} usable. ${capitalise(phrase(bad, n, 'rest'))} ${verb(bad.length, 'is', 'are')} a write-off.`;
+    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} worth having. ${capitalise(phrase(bad, n, 'rest'))} ${verb(bad.length, 'is', 'are')} a write-off.`;
   }
 
   return { line, sub: spine(verdicts) };
@@ -362,7 +406,7 @@ function spine(verdicts) {
   const wettest = verdicts.reduce((a, b) => (b.figures.rainTotal > a.figures.rainTotal ? b : a));
   const rainBit = wettest.figures.rainTotal >= 1
     ? ` Wettest day is ${dayName(wettest.date, verdicts.length)}, around ${round(wettest.figures.rainTotal, 1)}mm.`
-    : ' Little or no rain on any day.';
+    : ' Nothing more than a trace of rain on any day.';
 
   return `${Math.min(...lows)}° to ${Math.max(...highs)}° across the trip.${rainBit}`;
 }
