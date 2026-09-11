@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Fairweather workflow note</title>
+<style>
+  /* Deliberately plain. This is a typed document, not a designed one. */
+  @page { size: A4; margin: 20mm 20mm; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.4;
+    color: #000;
+    background: #fff;
+    margin: 0;
+  }
+  h1 { font-size: 13pt; margin: 0 0 2pt; }
+  .meta { margin: 0 0 12pt; font-size: 10pt; }
+  p { margin: 0 0 8pt; text-align: left; }
+  b { font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>Fairweather: workflow note</h1>
+<p class="meta">
+  Agasthya Khetan, ShARE BITS Pilani, Tech Vertical recruitment task<br>
+  Live site: https://fairweather-plum.vercel.app
+</p>
+
+<p>
+  <b>Who it advises.</b> One person on foot, outdoors for most of the day, away
+  from shelter. A day hiker. Every number below follows from that choice. Thirty
+  two degrees is a pleasant afternoon if you can step into a shop and a real
+  problem four hours into a walk, so thresholds tuned to cover both would be too
+  vague to act on.
+</p>
+
+<p>
+  <b>How it works.</b> The typed city goes to Open-Meteo's geocoding endpoint,
+  which returns up to five matches. A single match is used and named on screen;
+  two or more get a screen of their own showing region, country, population and
+  coordinates, because silently taking the first result guesses on the user's
+  behalf. The chosen coordinates and dates then fetch twelve daily fields and
+  three hourly series with timezone=auto, so days break at local midnight. If a
+  climbing height was given, every figure is re-derived for that height before
+  anything is judged. Seven concerns are then scored independently from 0 to 3:
+  rain, heat, cold, wind, UV, daylight and the snow line. The highest writes the
+  day's verdict, and ties break on heat, wind, cold, snow line, rain, UV,
+  daylight, ordered by what actually causes harm. Concerns that did not write the
+  verdict still feed one deduplicated packing list covering the whole trip.
+</p>
+
+<p>
+  <b>Thresholds.</b> Rain needs probability and volume together, because a 70%
+  chance of half a millimetre is nothing while 12mm at 55% soaks through
+  anything that is not a proper shell: 35% or 1mm to mention it, 60% with 2mm to
+  plan around, 70% with 10mm to avoid. Heat reads apparent temperature rather
+  than the thermometer, since humidity decides how hard a day of walking feels:
+  28, 32, 38 degrees. Cold reads the apparent minimum, which is what you meet at
+  dawn and at every stop: 7, 2 and -5 degrees. Wind uses gusts rather than the
+  sustained average, because the gust is what decides whether a route is
+  sensible: 25, 40 and 60 km/h. UV runs 6, 8 and 11, and matters more here than
+  for most people because there is no shade to step into. Daylight is capped at
+  level 1, since short days never make weather bad, they only limit how far you
+  can go.
+</p>
+
+<p>
+  <b>Altitude.</b> A forecast describes the town, and a hiker spends the day
+  above it. Chamonix sits at 1,060m. Enter 2,800m and the same week turns from
+  "all four days are walkable" into "only one of the four is straightforward".
+  Temperature moves at 6.5&deg;C per 1,000m and UV at 10%. Wind is deliberately left
+  alone, because a ridge is windier but no honest figure comes from a single
+  elevation number, and the page says so on screen. The snow line is fetched
+  rather than estimated, from Open-Meteo's hourly freezing level.
+</p>
+
+<p>
+  <b>One thing I left out.</b> The hourly chart. The app fetches an hourly series
+  and draws none of it. The same data becomes one sentence instead: "the rain
+  clears around 13:00, so there is a good afternoon in this if you start late."
+  Cloud cover is drawn as an icon but never scored, because an overcast 19 degree
+  day is excellent walking.
+</p>
+
+<p>
+  <b>What I would build next.</b> Wind that knows about terrain. Altitude adjusts
+  temperature and UV, but wind is still a valley reading, and it is the signal
+  most likely to turn a hard day into a dangerous one.
+</p>
+
+<p>
+  Built as plain HTML, CSS and JavaScript with no framework and no build step,
+  deployed on Vercel, with AI assistance from Claude Code for the markup and the
+  plumbing around the two API calls.
+</p>
+
+<p>
+  For the full reasoning behind every threshold, the five interface states and
+  the writing, the complete note is on the site at
+  https://fairweather-plum.vercel.app/note
+</p>
+
+</body>
+</html>
