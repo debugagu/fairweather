@@ -63,7 +63,7 @@ function rain(d) {
 
   if (chance >= 70 && mm >= 10) {
     return concern('rain', 3,
-      `This one is a write-off. ${mm}mm over the day is past the point where waterproofs keep helping, and tracks start moving underfoot. Take the day indoors and walk tomorrow instead.`,
+      `Not a day to be out. ${mm}mm over the day is past the point where waterproofs keep helping, and tracks start moving underfoot. Take the day indoors and walk tomorrow instead.`,
       'There is heavy rain with it.',
       ['shell', 'packcover', 'nocotton']);
   }
@@ -349,7 +349,7 @@ export function summariseTrip(verdicts) {
 
   if (n === 1) {
     const only = verdicts[0].level;
-    line = only === 3 ? 'One day, and it is a write-off. Move it if you can.'
+    line = only === 3 ? 'One day, and it is best avoided. Move it if you can.'
          : only === 2 ? 'One day, and it will take some planning.'
          : 'One day, and you have picked a good one.';
 
@@ -360,7 +360,7 @@ export function summariseTrip(verdicts) {
     line = `A good window for it. All ${n} days are walkable with nothing to plan around.`;
 
   } else if (bad.length === 0 && clear.length === 0) {
-    line = `Every one of these ${n} days needs planning around. None is a write-off, but none is straightforward either.`;
+    line = `Every one of these ${n} days needs planning around. None is unusable, but none is straightforward either.`;
 
   } else if (bad.length === 0 && clear.length >= tricky.length) {
     line = `Mostly good. ${phrase(tricky, n, 'lead')} ${verb(tricky.length, 'needs', 'need')} planning around, and the rest you can take as they come.`;
@@ -369,7 +369,7 @@ export function summariseTrip(verdicts) {
     line = `A demanding week. Only ${clear.length} of the ${n} days ${verb(clear.length, 'is', 'are')} straightforward, and ${phrase(tricky, n, 'rest')} ${verb(tricky.length, 'needs', 'need')} working around.`;
 
   } else {
-    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} worth having. ${capitalise(phrase(bad, n, 'rest'))} ${verb(bad.length, 'is', 'are')} a write-off.`;
+    line = `${usable} of the ${n} days ${verb(usable, 'is', 'are')} worth having. ${capitalise(phrase(bad, n, 'rest'))} ${verb(bad.length, 'is', 'are')} best avoided.`;
   }
 
   return { line, sub: spine(verdicts) };

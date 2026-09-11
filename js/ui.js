@@ -195,7 +195,7 @@ function tripStats(verdicts) {
   const goodDays = verdicts.filter(v => v.level <= 1).length;
 
   // "Worth having" is the summary sentence's phrase and means anything that is
-  // not a write-off. This counts something narrower, so it needs its own label.
+  // not best avoided. This counts something narrower, so it needs its own label.
   return [
     ['Range', lows.length ? `${Math.min(...lows)}° to ${Math.max(...highs)}°` : 'n/a'],
     ['Rain over the trip', `${Math.round(totalRain)}mm`],
