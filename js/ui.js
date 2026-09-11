@@ -7,6 +7,7 @@
 --------------------------------------------------------------------------- */
 
 import { iconFor, iconName, iconSvg } from './icons.js';
+import { temperatureDrop, metres } from './altitude.js';
 
 
 const results = document.getElementById('results');
@@ -100,7 +101,7 @@ function describe(place) {
 
 /* Results ------------------------------------------------------------------ */
 
-export function showReport({ place, verdicts, summary, packing, ambiguous }, onRechoose) {
+export function showReport({ place, verdicts, summary, packing, ambiguous, altitude }, onRechoose) {
   results.setAttribute('aria-busy', 'false');
   const node = template('t-results');
 
@@ -116,6 +117,18 @@ export function showReport({ place, verdicts, summary, packing, ambiguous }, onR
     rechoose.addEventListener('click', onRechoose);
   } else {
     rechoose.remove();
+  }
+
+  // One line, stated once, so every number below it can be read plainly as a
+  // mountain figure rather than each needing its own asterisk.
+  const altLine = slot(node, 'altitude');
+  if (altitude && altitude.gain > 0) {
+    const drop = temperatureDrop(altitude.gain);
+    altLine.textContent =
+      `Figures adjusted from ${metres(altitude.base)} to ${metres(altitude.target)}, `
+      + `about ${drop.toFixed(1)}° colder. Wind is a valley reading; ridges run higher.`;
+  } else {
+    altLine.remove();
   }
 
   const heroStats = slot(node, 'hero-stats');

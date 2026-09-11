@@ -471,3 +471,22 @@ td:nth-child(2), td:nth-child(3), td:nth-child(4) {
   .field--action button { width: 100%; }
   .summary-sub { margin-bottom: 2.2rem; }
 }
+
+/* Altitude ----------------------------------------------------------------- */
+
+.field--height { flex: 0 0 8rem; }
+.field--height input { font-family: var(--mono); font-size: .86rem; }
+
+.altitude-note {
+  margin: .55rem 0 0;
+  font-size: .78rem;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 32rem;
+  padding-left: .7rem;
+  border-left: 2px solid var(--rule);
+}
+
+@media (max-width: 34rem) {
+  .field--height { flex: 1 1 100%; }
+}

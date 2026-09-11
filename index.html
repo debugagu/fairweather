@@ -40,6 +40,11 @@
       <label for="end">To</label>
       <input id="end" name="end" type="date" required>
     </div>
+    <div class="field field--height">
+      <label for="height">Climbing to</label>
+      <input id="height" name="height" type="number" inputmode="numeric"
+             min="0" max="9000" step="50" placeholder="optional">
+    </div>
     <div class="field field--action">
       <button type="submit">Read the forecast</button>
     </div>
@@ -88,6 +93,10 @@
       The advice assumes a walking day: outdoors most of the time, away from
       shelter. Forecasts run up to 14 days ahead. Type a city above to start.
     </p>
+    <p class="state-body state-body--quiet">
+      If you give it a height, every figure is recalculated for up there instead
+      of the town, because that is where you will actually be.
+    </p>
   </section>
 </template>
 
@@ -124,6 +133,8 @@
         <p class="place-name" data-slot="place"></p>
         <button type="button" class="linky" data-action="rechoose" hidden>Not this one?</button>
       </div>
+
+      <p class="altitude-note" data-slot="altitude"></p>
 
       <p class="summary" data-slot="summary"></p>
       <p class="summary-sub" data-slot="summary-sub"></p>

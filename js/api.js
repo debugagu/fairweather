@@ -87,6 +87,7 @@ export async function findPlaces(name) {
     countryCode: place.country_code || '',
     latitude: place.latitude,
     longitude: place.longitude,
+    elevation: typeof place.elevation === 'number' ? place.elevation : null,
     population: place.population || 0,
     label: [place.name, place.admin1, place.country].filter(Boolean).join(', ')
   }));
@@ -109,9 +110,10 @@ const DAILY = [
   'sunset'
 ].join(',');
 
-// Hourly is only here to answer "when in the day", which is the difference
-// between "it will rain" and "go out after two".
-const HOURLY = ['precipitation_probability', 'uv_index'].join(',');
+// Hourly answers "when in the day", which is the difference between "it will
+// rain" and "go out after two". The freezing level is here for a second reason:
+// it is the one altitude figure worth fetching rather than estimating.
+const HOURLY = ['precipitation_probability', 'uv_index', 'freezing_level_height'].join(',');
 
 export async function fetchForecast(place, startDate, endDate) {
   const query = new URLSearchParams({
@@ -143,6 +145,7 @@ export async function fetchForecast(place, startDate, endDate) {
 
   return {
     timezone: data.timezone,
+    elevation: typeof data.elevation === 'number' ? data.elevation : null,
     days: daily.time.map((date, i) => ({
       date,
       code:         daily.weather_code?.[i],
@@ -173,7 +176,8 @@ function shapeHourly(hourly) {
     byDate.get(date).push({
       hour: Number(clock.slice(0, 2)),
       rainChance: hourly.precipitation_probability?.[i] ?? null,
-      uv: hourly.uv_index?.[i] ?? null
+      uv: hourly.uv_index?.[i] ?? null,
+      freezing: hourly.freezing_level_height?.[i] ?? null
     });
   });
 

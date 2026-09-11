@@ -31,11 +31,12 @@ styles.css      Geist and Geist Mono, blue ground, one working accent
 js/api.js       the two Open-Meteo calls, and every error the user might see
 js/verdict.js   every threshold in the product, in one file, on purpose
 js/icons.js     seven hand-drawn weather glyphs, mapped from WMO codes
+js/altitude.js  re-derives the forecast for the height you are climbing to
 js/ui.js        rendering and state switching, the only file that touches the DOM
 js/main.js      validation, the search sequence, shareable URLs
 ```
 
-`js/verdict.js` is the one worth reading. It holds all six concerns, their
+`js/verdict.js` is the one worth reading. It holds all seven concerns, their
 thresholds, the tie-break order, the packing rules and the wording. Changing
 what the app decides means changing that file only.
 

@@ -4,6 +4,7 @@
 
 import { findPlaces, fetchForecast, ApiError } from './api.js';
 import { judgeDay, summariseTrip, packingList } from './verdict.js';
+import { adjustForAltitude, freezingLevel } from './altitude.js';
 import * as ui from './ui.js';
 
 const MAX_DAYS_AHEAD = 14;   // what the brief asks for
@@ -13,6 +14,7 @@ const form = document.getElementById('search');
 const cityInput = document.getElementById('city');
 const startInput = document.getElementById('start');
 const endInput = document.getElementById('end');
+const heightInput = document.getElementById('height');
 
 /* Date bounds -------------------------------------------------------------- */
 
@@ -32,14 +34,19 @@ ui.setNote(`Any window up to ${MAX_DAYS_AHEAD} days ahead, through ${prettyDate(
 
 form.addEventListener('submit', event => {
   event.preventDefault();
-  run(cityInput.value, startInput.value, endInput.value);
+  run(cityInput.value, startInput.value, endInput.value, heightInput.value);
 });
 
 /* Validation --------------------------------------------------------------- */
 
 /* Returns an error sentence, or null if the input is usable. */
-function validate(city, start, end) {
-  ['city', 'start', 'end'].forEach(f => ui.markInvalid(f, false));
+function validate(city, start, end, height) {
+  ['city', 'start', 'end', 'height'].forEach(f => ui.markInvalid(f, false));
+
+  if (height !== null && (!isFinite(height) || height < 0 || height > 9000)) {
+    ui.markInvalid('height', true);
+    return 'Height should be a number of metres between 0 and 9000.';
+  }
 
   if (!city.trim()) {
     ui.markInvalid('city', true);
@@ -76,9 +83,12 @@ function validate(city, start, end) {
 
 let requestId = 0;   // so a slow reply from an abandoned search cannot land
 
-async function run(rawCity, start, end) {
+async function run(rawCity, start, end, rawHeight) {
   const city = rawCity.trim();
-  const problem = validate(city, start, end);
+  const height = rawHeight === '' || rawHeight === null || rawHeight === undefined
+    ? null
+    : Number(rawHeight);
+  const problem = validate(city, start, end, height);
 
   if (problem) {
     ui.setNote(problem, 'bad');
@@ -114,13 +124,13 @@ async function run(rawCity, start, end) {
   // on screen. More than one is handed back to the user, because silently
   // taking the first result is guessing on their behalf.
   if (places.length === 1) {
-    return report(places[0], start, end, false, mine);
+    return report(places[0], start, end, height, false, mine);
   }
 
-  ui.showChoices(city, places, place => report(place, start, end, true, ++requestId));
+  ui.showChoices(city, places, place => report(place, start, end, height, true, ++requestId));
 }
 
-async function report(place, start, end, ambiguous, mine) {
+async function report(place, start, end, height, ambiguous, mine) {
   ui.showLoading(`Reading ${place.name} for ${prettyDate(start)} to ${prettyDate(end)}…`);
 
   let forecast;
@@ -128,13 +138,34 @@ async function report(place, start, end, ambiguous, mine) {
     forecast = await fetchForecast(place, start, end);
   } catch (err) {
     if (mine !== requestId) return;
-    return fail(err, () => report(place, start, end, ambiguous, ++requestId));
+    return fail(err, () => report(place, start, end, height, ambiguous, ++requestId));
   }
   if (mine !== requestId) return;
 
-  const verdicts = forecast.days.map(day =>
-    judgeDay(day, forecast.hourly.get(day.date) || [])
-  );
+  // The forecast describes the town. If a height was given, everything is
+  // re-derived for up there before any threshold sees it.
+  const base = place.elevation ?? forecast.elevation ?? 0;
+
+  if (height !== null && height < base) {
+    ui.markInvalid('height', true);
+    return ui.showError(
+      `${place.name} already sits at ${Math.round(base)}m.`,
+      `Give a height above that, or leave it blank to read the forecast for the town itself.`,
+      null,
+      'notice'
+    );
+  }
+
+  const gain = height === null ? 0 : height - base;
+
+  const verdicts = forecast.days.map(day => {
+    const hours = forecast.hourly.get(day.date) || [];
+    const context = height === null ? null : {
+      targetElevation: height,
+      freezingLevel: freezingLevel(hours, day.sunrise, day.sunset)
+    };
+    return judgeDay(adjustForAltitude(day, gain), hours, context);
+  });
 
   ui.showReport(
     {
@@ -142,12 +173,13 @@ async function report(place, start, end, ambiguous, mine) {
       verdicts,
       summary: summariseTrip(verdicts),
       packing: packingList(verdicts),
-      ambiguous
+      ambiguous,
+      altitude: height === null ? null : { base, target: height, gain }
     },
-    () => run(place.name, start, end)
+    () => run(place.name, start, end, height)
   );
 
-  writeUrl(cityInput.value.trim() || place.name, start, end);
+  writeUrl(cityInput.value.trim() || place.name, start, end, height);
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -165,8 +197,9 @@ function fail(err, retry) {
 
 /* Shareable URLs ----------------------------------------------------------- */
 
-function writeUrl(city, start, end) {
+function writeUrl(city, start, end, height) {
   const query = new URLSearchParams({ city, start, end });
+  if (height !== null && height !== undefined) query.set('height', String(height));
   history.replaceState(null, '', `?${query}`);
 }
 
@@ -175,7 +208,8 @@ function readUrl() {
   const city = query.get('city');
   const start = query.get('start');
   const end = query.get('end');
-  return city && start && end ? { city, start, end } : null;
+  const height = query.get('height');
+  return city && start && end ? { city, start, end, height: height ?? '' } : null;
 }
 
 /* Dates -------------------------------------------------------------------- */
@@ -211,7 +245,8 @@ if (fromUrl) {
   cityInput.value = fromUrl.city;
   startInput.value = fromUrl.start;
   endInput.value = fromUrl.end;
-  run(fromUrl.city, fromUrl.start, fromUrl.end);
+  heightInput.value = fromUrl.height;
+  run(fromUrl.city, fromUrl.start, fromUrl.end, fromUrl.height);
 } else {
   ui.showEmpty();
 }

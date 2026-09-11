@@ -30,7 +30,7 @@
    only form that matters, which is how hard the day will feel.
 --------------------------------------------------------------------------- */
 
-const PRIORITY = ['heat', 'wind', 'cold', 'rain', 'uv', 'daylight'];
+const PRIORITY = ['heat', 'wind', 'cold', 'snowline', 'rain', 'uv', 'daylight'];
 
 export const BANDS = {
   0: 'Good day',
@@ -195,6 +195,37 @@ function uv(d) {
 }
 
 /*
+  The snow line. Distinct from the cold concern, which is about air temperature:
+  this is about what is under your boots. Above the freezing level, water that
+  fell stays frozen and old snow does not clear, which changes the footing and
+  the kit rather than how warm you feel.
+
+  The freezing level is fetched hourly rather than derived, so this is the one
+  altitude judgement in the app resting on a measurement instead of a rate.
+*/
+function snowline(d, context) {
+  if (!context || !context.targetElevation || context.freezingLevel === null) return null;
+
+  const above = context.targetElevation - context.freezingLevel;
+  const level = Math.round(context.freezingLevel);
+  const top = Math.round(context.targetElevation);
+
+  if (above >= 400) {
+    return concern('snowline', 2,
+      `You will be walking on frozen ground. The freezing level sits near ${level}m and you are heading to ${top}m, so the last few hundred metres hold snow or hard ice whatever the valley is doing. Traction underfoot, and turn back rather than push a frozen traverse.`,
+      'Also frozen ground underfoot.',
+      ['traction', 'gloveshat']);
+  }
+  if (above >= -100) {
+    return concern('snowline', 1,
+      `You will be crossing the freezing line. It sits near ${level}m against your ${top}m, so expect patchy ice on the upper section and clear ground below it. Worth knowing where the change happens before you commit.`,
+      'Also ice higher up.',
+      ['gloveshat']);
+  }
+  return null;
+}
+
+/*
   Daylight never makes a day bad, it just limits how far you can go. Capped at
   level 1 for that reason.
 */
@@ -210,8 +241,11 @@ function daylight(d) {
 
 /* Assembling the day ------------------------------------------------------- */
 
-export function judgeDay(day, hoursForDay) {
-  const found = [rain(day), heat(day), cold(day), wind(day), uv(day), daylight(day)]
+export function judgeDay(day, hoursForDay, context = null) {
+  const found = [
+    rain(day), heat(day), cold(day), wind(day),
+    uv(day), daylight(day), snowline(day, context)
+  ]
     .filter(Boolean)
     .sort(bySeverityThenPriority);
 

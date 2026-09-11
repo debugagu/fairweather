@@ -48,12 +48,19 @@ because a native date picker can be bypassed. Past dates are rejected rather
 than redirected to the archive API, since a forecast and a historical record are
 different things.
 
-**3. Six concerns, scored separately.**
-Rain, heat, cold, wind, UV and daylight. Each returns a level: 0 not worth
-mentioning, 1 worth knowing, 2 changes the plan, 3 do not go. The day takes the
-highest level reached.
+**3. Height, if you gave one.**
+A forecast describes a point on the map, and that point is the town. A hiker
+starts there and climbs. Chamonix sits at 1,060m; the paths above it run past
+2,400m. Reading the valley forecast and walking the ridge is how people end up
+cold, so if you say how high you are going, every figure is re-derived for that
+height before any threshold sees it. Details in the section below.
 
-**4. One concern writes the answer.**
+**4. Seven concerns, scored separately.**
+Rain, heat, cold, wind, UV, daylight and the snow line. Each returns a level: 0
+not worth mentioning, 1 worth knowing, 2 changes the plan, 3 do not go. The day
+takes the highest level reached.
+
+**5. One concern writes the answer.**
 The highest-scoring one. Ties break on a fixed order (heat, wind, cold, rain,
 UV, daylight), ordered by what is most likely to cause actual harm.
 
@@ -63,13 +70,13 @@ thing on the card. The reasoning sits under it. The numbers are the smallest
 thing there. If you have to read a temperature to know what the app is telling
 you, the hierarchy is wrong.
 
-**5. The rest go to the packing list.**
+**6. The rest go to the packing list.**
 Concerns that did not write the sentence still contribute items. A day whose
 verdict is about heat will still put a waterproof in the bag if there was rain in
 it. The list is deduplicated twice: once by item, and once by redundancy, since a
 waterproof shell is already windproof and three litres of capacity covers two.
 
-**6. Hourly data answers "when", not "whether".**
+**7. Hourly data answers "when", not "whether".**
 Within daylight hours the app locates the rain and reports *"The rain clears
 around 13:00, so there is a good afternoon in this if you start late."* instead
 of "70% chance of rain". That is the only reason the hourly series is fetched.
@@ -108,6 +115,52 @@ cannot show the difference between light and moderate drizzle. They are
 descriptive only and feed into no threshold. An overcast day still reads "good
 walking weather", because cloud has little to do with whether a walk is worth
 taking.
+
+---
+
+## Altitude
+
+This is the part I would defend hardest, because it is the difference between a
+forecast and advice for the person actually using it. Every weather tool gives
+you the valley. A hiker spends the day well above it.
+
+Give the app a height and it recalculates before judging, so the existing
+thresholds end up asking about the right place rather than the wrong one.
+Chamonix on a settled September week reads *"A good window for it. All 4 days
+are walkable with nothing to plan around."* The same city, same dates, at
+2,800m: *"A demanding week. Only 1 of the 4 days is straightforward."* Hard
+frost at −4°, and gloves appear in the packing list. Nothing about the
+judgement changed. Only the question did.
+
+**What is adjusted, and on what authority.**
+
+- *Temperature*, at the environmental lapse rate of **6.5°C per 1,000m**. That
+  is the standard atmosphere figure. Real rates run from about 5 in saturated
+  air to 9.8 in dry, so it is a middle estimate rather than a measurement, and
+  it is applied to the feels-like figures too.
+- *UV*, at **10% per 1,000m**. Less atmosphere overhead means more gets through.
+  Published estimates cluster between 8 and 12% per kilometre.
+
+**What is not adjusted, and why not.**
+
+- *Wind.* A ridge is far windier than the valley, but by how much depends on the
+  shape of the ground, and no honest figure comes out of a single elevation
+  number. A made-up multiplier would look more precise and be less true, so the
+  app says on screen that the wind reading is a valley one.
+- *Rain.* More falls with height, but the part that matters is whether it lands
+  as rain or snow, and the freezing level answers that directly.
+
+**The snow line is fetched, not estimated.** Open-Meteo returns
+`freezing_level_height` hourly, so this is the one altitude judgement in the app
+resting on a measurement. Averaged across daylight and compared against your
+target height, it becomes the seventh concern: 400m or more above it means
+frozen ground and traction in the pack; within 100m means you cross the line
+partway up and should know where. It is deliberately separate from the cold
+concern, which is about air temperature. This one is about what is under your
+boots.
+
+If you enter a height below the town, the app says so rather than silently
+ignoring it.
 
 ---
 
@@ -203,8 +256,10 @@ listing things you would bring anyway makes the list longer and less useful.
 
 1. **Confidence.** A ten-day forecast is currently treated the same as a two-day
    one. Comparing model runs would let the wording soften as the horizon extends.
-2. **Elevation.** The geocoding response includes an elevation the app ignores.
-   25 km/h at 2,400 m is not the same day as 25 km/h at sea level.
+2. **Wind that knows about terrain.** Altitude adjusts temperature and UV, but
+   wind is still a valley reading, because a single elevation figure cannot tell
+   you how exposed a ridge is. Terrain data could, and wind is the signal most
+   likely to turn a hard day into a dangerous one.
 3. **A second audience.** Not a toggle over these numbers, but a separate set of
    thresholds. Trying to advise a hiker and a wedding guest from one table would
    make both worse.
@@ -213,7 +268,7 @@ listing things you would bring anyway makes the list longer and less useful.
 
 ## Built with
 
-Plain HTML, CSS and JavaScript. Five ES modules and nothing to install. Geist and
+Plain HTML, CSS and JavaScript. Six ES modules and nothing to install. Geist and
 Geist Mono, with figures set in the mono so the columns hold still between days.
 Deployed as static files on Vercel, which needs no configuration because there is
 nothing running on the server side.
